@@ -1,4 +1,4 @@
-package com.github.aquamancer.warlordsbufficons189.mixin;
+package com.github.aquamancer.warlordsbufficons.mixin;
 
 import net.minecraft.client.gui.GuiMainMenu;
 import org.spongepowered.asm.mixin.Mixin;

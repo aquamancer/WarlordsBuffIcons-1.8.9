@@ -1,4 +1,4 @@
-package com.github.aquamancer.warlordsbufficons189;
+package com.github.aquamancer.warlordsbufficons;
 
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.init.Blocks;

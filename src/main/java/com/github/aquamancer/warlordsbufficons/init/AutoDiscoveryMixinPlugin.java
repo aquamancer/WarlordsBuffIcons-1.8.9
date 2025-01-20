@@ -1,4 +1,4 @@
-package com.github.aquamancer.warlordsbufficons189.init;
+package com.github.aquamancer.warlordsbufficons.init;
 
 import org.spongepowered.asm.lib.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
