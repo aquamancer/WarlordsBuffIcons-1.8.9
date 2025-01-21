@@ -1,6 +1,6 @@
 package com.github.aquamancer.warlordsbufficons.statuses;
 
-public enum Debuff {
+public enum DebuffEnum {
     NONE,
     
     STUN_ARCANE_SHIELD,

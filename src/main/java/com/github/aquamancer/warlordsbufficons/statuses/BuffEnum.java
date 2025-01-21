@@ -1,6 +1,6 @@
 package com.github.aquamancer.warlordsbufficons.statuses;
 
-public enum Buff {
+public enum BuffEnum {
     NONE,
     
     TIME_WARP,
