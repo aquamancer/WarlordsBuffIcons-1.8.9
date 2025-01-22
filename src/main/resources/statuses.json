@@ -1,0 +1,8 @@
+{
+  "TIME_WARP": {
+    "enabled": true,
+    "type": "BUFF",
+    "border": "GREEN",
+    "staticInitialDuration": 5000
+  }
+}
