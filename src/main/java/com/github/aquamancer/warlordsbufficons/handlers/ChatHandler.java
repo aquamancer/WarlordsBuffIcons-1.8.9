@@ -1,5 +1,6 @@
 package com.github.aquamancer.warlordsbufficons.handlers;
 
+import com.github.aquamancer.warlordsbufficons.StatusController;
 import com.github.aquamancer.warlordsbufficons.statuses.BuffEnum;
 import com.github.aquamancer.warlordsbufficons.statuses.DebuffEnum;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
@@ -23,7 +24,7 @@ public class ChatHandler {
         for (BuffEnum buff : buffMatches)
             StatusController.onChatBuff(buff);
         for (DebuffEnum debuff : debuffMatches)
-            STatusController.onChatDebuff(debuff);
+            StatusController.onChatDebuff(debuff);
     }
     private static boolean isGameMessage(String s) {
         // todo
