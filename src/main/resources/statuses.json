@@ -3,6 +3,22 @@
     "enabled": true,
     "type": "BUFF",
     "border": "GREEN",
-    "staticInitialDuration": 5000
+    "staticInitialDuration": 5000,
+    "priority": 0,
+    "stacking": {
+      "enabled": false
+    }
+  },
+  "CHAIN_LIGHTNING": {
+    "enabled": true,
+    "type": "BUFF",
+    "border": "GREEN",
+    "staticInitialDuration": -1,
+    "priority": 0,
+    "stacking": {
+      "enabled": true,
+      "maxStacks": 3,
+      "millisDelta": 20
+    }
   }
 }
