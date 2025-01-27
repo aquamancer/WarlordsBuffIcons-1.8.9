@@ -1,8 +1,11 @@
 {
   "TIME_WARP": {
+    "actionBarName": "WARP",
     "enabled": true,
     "type": "BUFF",
+    "isHypixelDebuff": false,
     "border": "GREEN",
+    "icon": "foo.png",
     "staticInitialDuration": 5000,
     "priority": 0,
     "stacking": {
@@ -10,9 +13,11 @@
     }
   },
   "CHAIN_LIGHTNING": {
+    "actionBarName": "CHAIN",
     "enabled": true,
     "type": "BUFF",
     "border": "GREEN",
+    "icon": "foo.png",
     "staticInitialDuration": -1,
     "priority": 0,
     "stacking": {
@@ -20,5 +25,5 @@
       "maxStacks": 3,
       "millisDelta": 20
     }
-  }
+  },
 }
