@@ -21,7 +21,7 @@ public class Status {
      * Syncs the remaining duration. 
      * @param remainingDuration
      */
-    public void sync(int remainingDuration) {
+    public long sync(int remainingDuration) {
         
     }
     public void setRemainingDuration(double duration) {

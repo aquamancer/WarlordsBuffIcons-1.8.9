@@ -67,11 +67,11 @@ public class StatusController {
         String message = bar.getUnformattedText();
         // verify the action bar message is warlords in game action bar, not something else, like +5 coins
         if (!WARLORDS_ACTIONBAR_IDENTIFIER.matcher(message).find()) return;
-        ActionBarStatuses actionBarStatuses = parseStatusesFromActionBar(message);
-        if (actionBarStatuses.equals(previousActionBar)) return;
-        updateStatuses(actionBarStatuses);
+        ActionBarStatuses currentActionBar = parseStatusesFromActionBar(message);
+        if (currentActionBar.equals(previousActionBar)) return;
+        updateStatuses(currentActionBar);
         
-        previousActionBar = actionBarStatuses;
+        previousActionBar = currentActionBar;
     }
 
     private static ActionBarStatuses parseStatusesFromActionBar(String actionBarMessage) {
@@ -103,5 +103,9 @@ public class StatusController {
                 }
             }
         }
+    }
+    private static int syncUpToDifference(ActionBarStatuses currentActionBar) {
+        int indexOfDifference;
+
     }
 }
