@@ -87,9 +87,14 @@ public class StatusController {
      * @param recentActionBar
      */
     private static void onActionBarChanged(ActionBarStatuses recentActionBar) {
-        // todo WRITE TESTS
-//        List<Integer> deletions = ActionBarStatuses.getDeletions(previousActionBar.getBuffs(), recentActionBar, statuses.mi);
-//        List<Integer> additions = ActionBarStatuses.getAdditions(previousActionBar, recentActionBar);
+        Set<Integer> deletedBuffs = ActionBarStatuses.getDeletions(previousActionBar.getBuffs(), recentActionBar.getBuffs(), statuses.getMirroredBuffs());
+        List<Map.Entry<String, Integer>> addedBuffs = ActionBarStatuses.getAdditions(previousActionBar.getBuffs(), recentActionBar.getBuffs(), deletedBuffs);
+        Set<Integer> deletedDebuffs = ActionBarStatuses.getDeletions(previousActionBar.getDebuffs(), recentActionBar.getDebuffs(), statuses.getMirroredDebuffs());
+        List<Map.Entry<String, Integer>> addedDebuffs = ActionBarStatuses.getAdditions(previousActionBar.getDebuffs(), recentActionBar.getDebuffs(), deletedDebuffs);
+
+        for (Integer deletedBuff : deletedBuffs) {
+            statuses.remove(deletedBuff, false);
+        }
     }
     // todo awaiting test: order of multiple hypixel debuffs at the same time.
 

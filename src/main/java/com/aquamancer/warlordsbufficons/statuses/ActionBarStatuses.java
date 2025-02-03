@@ -129,7 +129,7 @@ public class ActionBarStatuses {
         if (!input.isEmpty() && compareTo.isEmpty()) return true;
         return !input.get(0).getKey().equals(compareTo.get(0).getKey());
     }
-    public static void getAdditions(List<Map.Entry<String, Integer>> old, List<Map.Entry<String, Integer>> recent, List<Integer> indexesOfDeletions) {
-
+    public static List<Map.Entry<String, Integer>> getAdditions(List<Map.Entry<String, Integer>> old, List<Map.Entry<String, Integer>> recent, Set<Integer> indexesOfDeletions) {
+        return recent.subList(Math.min(recent.size(), old.size() - indexesOfDeletions.size()), recent.size());
     }
 }

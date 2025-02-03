@@ -36,9 +36,17 @@ public class Statuses {
             this.buffs.add(status);
         }
     }
-    public void remove(Status status) {
-        this.buffs.remove(status);
-        this.debuffs.remove(status);
+    public void remove(int index, boolean isHypixelDebuff) {
+        Status toRemove;
+        if (isHypixelDebuff) {
+            toRemove = this.debuffs.remove(index);
+            toRemove.markForDeletion();
+            this.debuffs.remove(toRemove);
+        } else {
+            toRemove = this.buffs.remove(index);
+            toRemove.markForDeletion();
+            this.buffs.remove(toRemove);
+        }
     }
 
     public List<Status> getBuffs() {
