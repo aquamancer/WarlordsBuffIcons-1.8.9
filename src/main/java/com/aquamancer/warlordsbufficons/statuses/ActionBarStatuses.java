@@ -46,8 +46,8 @@ public class ActionBarStatuses {
      * @param mirrored a mirror of the action bar before the update, with statuses instead of raw data
      * @return indexes of statuses that have been removed in recent
      */
-    public static List<Integer> getDeletions(List<Map.Entry<String, Integer>> old, List<Map.Entry<String, Integer>> recent, List<Status> mirrored) {
-        List<Integer> deletions = new ArrayList<>();
+    public static Set<Integer> getDeletions(List<Map.Entry<String, Integer>> old, List<Map.Entry<String, Integer>> recent, List<Status> mirrored) {
+        Set<Integer> deletions = new HashSet<>();
         // Need to group consecutive old statuses to identify which one was actually removed in case one of them gets
         // removed in recent. Otherwise, it will always think that the latter buff(s) got removed.
         List<List<Map.Entry<String, Integer>>> oldGroups = groupConsecutive(old); 
@@ -128,5 +128,8 @@ public class ActionBarStatuses {
     private static boolean noneMatch(List<Map.Entry<String, Integer>> input, List<Map.Entry<String, Integer>> compareTo) {
         if (!input.isEmpty() && compareTo.isEmpty()) return true;
         return !input.get(0).getKey().equals(compareTo.get(0).getKey());
+    }
+    public static void getAdditions(List<Map.Entry<String, Integer>> old, List<Map.Entry<String, Integer>> recent, List<Integer> indexesOfDeletions) {
+
     }
 }

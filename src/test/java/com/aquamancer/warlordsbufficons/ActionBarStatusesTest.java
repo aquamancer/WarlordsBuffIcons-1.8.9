@@ -1,9 +1,6 @@
 package com.aquamancer.warlordsbufficons;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.AbstractMap.SimpleEntry;
 
 import com.aquamancer.warlordsbufficons.statuses.ActionBarStatuses;
@@ -15,7 +12,7 @@ import scala.tools.nsc.interpreter.SimpleMath;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class ActionBarStatusesTest {
-    public static List<Integer> getDeletions(List<Map.Entry<String, Integer>> old, List<Map.Entry<String, Integer>> recent, List<Status> mirrored) {
+    public static Set<Integer> getDeletions(List<Map.Entry<String, Integer>> old, List<Map.Entry<String, Integer>> recent, List<Status> mirrored) {
         return ActionBarStatuses.getDeletions(old, recent, mirrored);
     }
     @Test 
@@ -23,7 +20,7 @@ public class ActionBarStatusesTest {
         List<Map.Entry<String, Integer>> old = new ArrayList<>();
         List<Map.Entry<String, Integer>> recent = new ArrayList<>();
         List<Status> mirrored = new ArrayList<>();
-        assertEquals(new ArrayList<>(), getDeletions(old, recent, mirrored));
+        assertEquals(new HashSet<>(), getDeletions(old, recent, mirrored));
     }
     @Test
     public void deletions2() {
@@ -31,7 +28,7 @@ public class ActionBarStatusesTest {
         List<Map.Entry<String, Integer>> recent = new ArrayList<>();
         recent.add(new SimpleEntry<>("a", 2));
         List<Status> mirrored = new ArrayList<>();
-        assertEquals(new ArrayList<>(), getDeletions(old, recent, mirrored));
+        assertEquals(new HashSet<>(), getDeletions(old, recent, mirrored));
     }
     @Test
     public void deletions3() {
@@ -40,7 +37,7 @@ public class ActionBarStatusesTest {
         old.add(new SimpleEntry<>("a", 10));
         recent.add(new SimpleEntry<>("a", 2));
         List<Status> mirrored = new ArrayList<>();
-        assertEquals(new ArrayList<>(), getDeletions(old, recent, mirrored));
+        assertEquals(new HashSet<>(), getDeletions(old, recent, mirrored));
     }
     @Test
     public void deletions4() {
@@ -48,7 +45,7 @@ public class ActionBarStatusesTest {
         List<Map.Entry<String, Integer>> recent = new ArrayList<>();
         old.add(new SimpleEntry<>("a", 10));
         List<Status> mirrored = new ArrayList<>();
-        assertEquals(Arrays.asList(0), getDeletions(old, recent, mirrored));
+        assertEquals(new HashSet<>(Arrays.asList(0)), getDeletions(old, recent, mirrored));
     }
     @Test
     public void deletions5() {
@@ -59,7 +56,7 @@ public class ActionBarStatusesTest {
         recent.add(new SimpleEntry<>("a", 1));
         recent.add(new SimpleEntry<>("a", 5));
         List<Status> mirrored = new ArrayList<>();
-        assertEquals(new ArrayList<>(), getDeletions(old, recent, mirrored));
+        assertEquals(new HashSet<>(), getDeletions(old, recent, mirrored));
     }
     @Test
     public void deletions6() {
@@ -69,7 +66,7 @@ public class ActionBarStatusesTest {
         old.add(new SimpleEntry<>("b", 10));
         recent.add(new SimpleEntry<>("a", 5));
         List<Status> mirrored = new ArrayList<>();
-        assertEquals(Arrays.asList(1), getDeletions(old, recent, mirrored));
+        assertEquals(new HashSet<>(Arrays.asList(1)), getDeletions(old, recent, mirrored));
     }
     @Test
     public void deletions7() {
@@ -79,7 +76,7 @@ public class ActionBarStatusesTest {
         old.add(new SimpleEntry<>("b", 10));
         recent.add(new SimpleEntry<>("b", 5));
         List<Status> mirrored = new ArrayList<>();
-        assertEquals(Arrays.asList(0), getDeletions(old, recent, mirrored));
+        assertEquals(new HashSet<>(Arrays.asList(0)), getDeletions(old, recent, mirrored));
     }
     @Test
     public void deletions8() {
@@ -91,7 +88,7 @@ public class ActionBarStatusesTest {
         recent.add(new SimpleEntry<>("b", 5));
         recent.add(new SimpleEntry<>("b", 5));
         List<Status> mirrored = new ArrayList<>();
-        assertEquals(Arrays.asList(0, 1), getDeletions(old, recent, mirrored));
+        assertEquals(new HashSet<>(Arrays.asList(0, 1)), getDeletions(old, recent, mirrored));
     }
     @Test
     public void deletions9() {
@@ -111,7 +108,7 @@ public class ActionBarStatusesTest {
         recent.add(new SimpleEntry<>("f", 5));
         recent.add(new SimpleEntry<>("h", 5));
         List<Status> mirrored = new ArrayList<>();
-        assertEquals(Arrays.asList(0, 3, 6), getDeletions(old, recent, mirrored));
+        assertEquals(new HashSet<>(Arrays.asList(0, 3, 6)), getDeletions(old, recent, mirrored));
     }
     //todo add cases for partial matches
 }
