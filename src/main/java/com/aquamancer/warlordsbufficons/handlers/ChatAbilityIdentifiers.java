@@ -1,7 +1,7 @@
-package com.github.aquamancer.warlordsbufficons.handlers;
+package com.aquamancer.warlordsbufficons.handlers;
 
-import com.github.aquamancer.warlordsbufficons.statuses.BuffEnum;
-import com.github.aquamancer.warlordsbufficons.statuses.DebuffEnum;
+import com.aquamancer.warlordsbufficons.statuses.BuffEnum;
+import com.aquamancer.warlordsbufficons.statuses.DebuffEnum;
 
 import java.util.ArrayList;
 import java.util.List;

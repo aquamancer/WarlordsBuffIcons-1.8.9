@@ -1,8 +1,6 @@
-package com.github.aquamancer.warlordsbufficons;
+package com.aquamancer.warlordsbufficons;
 
-import com.github.aquamancer.warlordsbufficons.handlers.ChatHandler;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.init.Blocks;
+import com.aquamancer.warlordsbufficons.handlers.ChatHandler;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;

@@ -1,8 +1,7 @@
-package com.github.aquamancer.warlordsbufficons.handlers;
+package com.aquamancer.warlordsbufficons.handlers;
 
-import com.github.aquamancer.warlordsbufficons.StatusController;
-import com.github.aquamancer.warlordsbufficons.statuses.BuffEnum;
-import com.github.aquamancer.warlordsbufficons.statuses.DebuffEnum;
+import com.aquamancer.warlordsbufficons.statuses.BuffEnum;
+import com.aquamancer.warlordsbufficons.statuses.DebuffEnum;
 import net.minecraftforge.client.event.ClientChatReceivedEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
@@ -21,10 +20,10 @@ public class ChatHandler {
         List<DebuffEnum> debuffMatches = ChatAbilityIdentifiers.getDebuffMatches(message);
         if (buffMatches.size() + debuffMatches.size() <= 0) return; // no matches
 
-        for (BuffEnum buff : buffMatches)
-            StatusController.onChatBuff(buff);
-        for (DebuffEnum debuff : debuffMatches)
-            StatusController.onChatDebuff(debuff);
+//        for (BuffEnum buff : buffMatches)
+//            StatusController.onChatBuff(buff);
+//        for (DebuffEnum debuff : debuffMatches)
+//            StatusController.onChatDebuff(debuff);
     }
     private static boolean isGameMessage(String s) {
         // todo

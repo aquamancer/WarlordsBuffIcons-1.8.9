@@ -1,10 +1,11 @@
-package com.github.aquamancer.warlordsbufficons;
+package com.aquamancer.warlordsbufficons;
 
-import com.github.aquamancer.warlordsbufficons.statuses.*;
+import com.aquamancer.warlordsbufficons.statuses.ActionBarStatuses;
+import com.aquamancer.warlordsbufficons.statuses.Status;
+import com.aquamancer.warlordsbufficons.statuses.Statuses;
 import net.minecraft.util.IChatComponent;
 
 import java.util.*;
-import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
@@ -44,7 +45,7 @@ public class StatusController {
      */
     public static void onChatStatus(Status status) {
         statuses.add(status);
-        if (status.actionBarName.equals("")) return; // buffs not represented by the action bar
+        if (status.getActionBarName().equals("")) return; // buffs not represented by the action bar
         // todo make sure this doesn't create a null pointer
         statuses.getIconCancelTasks().put(status,
               executor.schedule(() -> {
@@ -63,13 +64,13 @@ public class StatusController {
      * to the right.
      * @param bar
      */
-    public static void onActionBarChanged(IChatComponent bar) {
+    public static void onActionBarPacketReceived(IChatComponent bar) {
         String message = bar.getUnformattedText();
         // verify the action bar message is warlords in game action bar, not something else, like +5 coins
         if (!WARLORDS_ACTIONBAR_IDENTIFIER.matcher(message).find()) return;
         ActionBarStatuses currentActionBar = parseStatusesFromActionBar(message);
         if (currentActionBar.equals(previousActionBar)) return;
-        updateStatuses(currentActionBar);
+        onActionBarChanged(currentActionBar);
         
         previousActionBar = currentActionBar;
     }
@@ -78,34 +79,25 @@ public class StatusController {
         // todo awaiting ingame testing for the format of the action bar string
         return null;
     }
-    // todo awaiting test: order of multiple hypixel debuffs at the same time.
-    private static void updateStatuses(ActionBarStatuses currentActionBar) {
-        // update buffs
-        // this int is used to track the first occurrence of a buff having a different name from the previous in the
-        // same index
-        int indexOfFirstNameDifference = 0;
-        for (int i = 0; i < Math.min(currentActionBar.getBuffs().size(), previousActionBar.getBuffs().size()); i++) {
-            String previousName = previousActionBar.getBuffs().get(i).getKey();
-            Integer previousDuration = previousActionBar.getBuffs().get(i).getValue();
-            String currentName = currentActionBar.getBuffs().get(i).getKey();
-            Integer currentDuration = currentActionBar.getBuffs().get(i).getValue();
-            if (!previousName.equals(currentName)) {
-                indexOfFirstNameDifference = i;
-                break;
-            }
-            // previousName == currentName
-            if (!previousDuration.equals(currentDuration)) {
-                long offset = statuses.getMirroredBuffs().get(i).sync(currentDuration);
-                // if the displayed remaining duration is way too far behind the expected, treat this as a
-                // new status
-                if (offset < x) {
-                    // treat as new status
-                }
-            }
-        }
+    
+    /**
+     * Compares the previous raw action bar data to the recent raw action bar data. All found status additions are
+     * added to statuses, and all status removals are removed from statuses. Statuses whose duration has changed
+     * in this packet and are in the same index (after removals) will have their durations synced.
+     * @param recentActionBar
+     */
+    private static void onActionBarChanged(ActionBarStatuses recentActionBar) {
+        // todo WRITE TESTS
+//        List<Integer> deletions = ActionBarStatuses.getDeletions(previousActionBar.getBuffs(), recentActionBar, statuses.mi);
+//        List<Integer> additions = ActionBarStatuses.getAdditions(previousActionBar, recentActionBar);
     }
-    private static int syncUpToDifference(ActionBarStatuses currentActionBar) {
-        int indexOfDifference;
+    // todo awaiting test: order of multiple hypixel debuffs at the same time.
 
+    /**
+     * Based on the previous action bar and recent raw action bar data, parse and construct currentStatusBar. <br>
+     * This entails assigning currentActionBar to a shallow copy of previousActionBar, then removing and adding
+     * new statuses based on the result of parsing algorithm of the raw action bar data. 
+     */
+    private static void constructCurrentStatuses(List<Map.Entry<String, Integer>> rawActionBarData) {
     }
 }

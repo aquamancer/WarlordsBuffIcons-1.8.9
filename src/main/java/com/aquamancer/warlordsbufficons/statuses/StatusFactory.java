@@ -1,10 +1,9 @@
-package com.github.aquamancer.warlordsbufficons.statuses;
+package com.aquamancer.warlordsbufficons.statuses;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.util.Map;
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**

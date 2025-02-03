@@ -1,4 +1,4 @@
-package com.github.aquamancer.warlordsbufficons.statuses;
+package com.aquamancer.warlordsbufficons.statuses;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -30,7 +30,7 @@ public class Statuses {
         this.iconCancelTasks = new HashMap<>();
     }
     public void add(Status status) {
-        if (status.isHypixelDebuff) {
+        if (status.isHypixelDebuff()) {
             this.debuffs.add(status);
         } else {
             this.buffs.add(status);

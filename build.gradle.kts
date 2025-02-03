@@ -86,11 +86,20 @@ dependencies {
 
     // If you don't want to log in with your real minecraft account, remove this line
     runtimeOnly("me.djtheredstoner:DevAuth-forge-legacy:1.2.1")
-
+    // JUnit dependencies
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.1")
+    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.7.1")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.1")
 }
 
 // Tasks:
 
+tasks.test {
+    useJUnitPlatform()  // For JUnit 5
+    testLogging {
+        events("passed", "skipped", "failed")
+    }
+}
 tasks.withType(JavaCompile::class) {
     options.encoding = "UTF-8"
 }

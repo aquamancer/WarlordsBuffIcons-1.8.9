@@ -1,4 +1,4 @@
-package com.github.aquamancer.warlordsbufficons.statuses;
+package com.aquamancer.warlordsbufficons.statuses;
 
 public enum DebuffEnum {
     NONE,
