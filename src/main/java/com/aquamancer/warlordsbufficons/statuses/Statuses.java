@@ -13,6 +13,14 @@ public class Statuses {
     private List<Status> buffs;
     private List<Status> debuffs;
     /**
+     * Lists of statuses that have been added instantly on chat identification. We have a separate list to handle
+     * in case the status that was added due to a chat event did not end up being reflected in the action bar (ex.
+     * cleansed before the action bar updated). There will be a timeout time constant where if the status was not
+     * reflected in the action bar after x millis, the status from chat will be deleted.
+     */
+    private List<Status> predictedBuffs;
+    private List<Status> predictedDebuffs;
+    /**
      * Contains references to elements in allStatuses, but only contains ones that are currently displayed
      * in the action bar, and is kept in the same order.<br>
      * Where: action bar = actionBarMirrorBuffs * actionBarMirrorDebuffs
@@ -21,7 +29,8 @@ public class Statuses {
     private List<Status> mirroredDebuffs;
 
     /**
-     * Lists of statuses that will actually be displayed.
+     * Lists of statuses that are actually displayed by the program. Used for functionality of removeSoft and
+     * if the user configs to not display the status.
      */
     private List<Status> displayedBuffs;
     private List<Status> displayedDebuffs;
@@ -47,6 +56,13 @@ public class Statuses {
             if (addIcon) this.displayedBuffs.add(status);
         }
     }
+    public void add(List<Map.Entry<String, Integer>> statuses, boolean isHypixelDebuff) {
+        for (Map.Entry<String, Integer> status : statuses) {
+            if (isHypixelDebuff) {
+                this.debuffs.add(StatusFactory.createStatus())
+            }
+        }
+    }
     public void removeHard(Status status, boolean removeIcon) {
         if (status.isHypixelDebuff()) {
             this.debuffs.remove(status);
@@ -59,8 +75,8 @@ public class Statuses {
 
     /**
      * Removes the Status at the index of the mirrored list from the mirrored list and the master list. If the remaining
-     * duration on the status is <= REMOVE_THRESHOLD_MIN, it is not removed from the displayed list, and it will expire
-     * on its own. Otherwise it is abruptly removed from the displayed list.
+     * duration on the status is <= REMOVE_THRESHOLD_MIN, it is only removed from the master list, so the status will
+     * expire on its own. Otherwise, it is abruptly removed from the displayed list. This is why it's called "soft."
      * @param indexOnActionBar
      * @param isHypixelDebuff
      */

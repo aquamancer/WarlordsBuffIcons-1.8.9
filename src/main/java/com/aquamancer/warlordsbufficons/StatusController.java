@@ -19,7 +19,6 @@ public class StatusController {
      * Integer = duration remaining
      */
     private static ActionBarStatuses previousActionBar;
-
     private static Statuses statuses;
     
     private static ScheduledThreadPoolExecutor executor = null;
@@ -68,14 +67,14 @@ public class StatusController {
         String message = bar.getUnformattedText();
         // verify the action bar message is warlords in game action bar, not something else, like +5 coins
         if (!WARLORDS_ACTIONBAR_IDENTIFIER.matcher(message).find()) return;
-        ActionBarStatuses currentActionBar = parseStatusesFromActionBar(message);
+        ActionBarStatuses currentActionBar = parseStatusesFromActionBar(bar);
         if (currentActionBar.equals(previousActionBar)) return;
         onActionBarChanged(currentActionBar);
         
         previousActionBar = currentActionBar;
     }
 
-    private static ActionBarStatuses parseStatusesFromActionBar(String actionBarMessage) {
+    private static ActionBarStatuses parseStatusesFromActionBar(IChatComponent actionBar) {
         // todo awaiting ingame testing for the format of the action bar string
         return null;
     }
@@ -95,6 +94,13 @@ public class StatusController {
         for (Integer deletedBuff : deletedBuffs) {
             statuses.removeSoft(deletedBuff, false);
         }
+        // sync the durations of existing statuses up to statuses that have just been added
+        // statuses/mirrored buffs has not yet been updated with the new buffs, so its size will be <= recentActionBar
+        for (int i = 0; i < statuses.getMirroredBuffs().size(); i++) {
+            statuses.getMirroredBuffs().get(i).sync(recentActionBar.getBuffs().get(i));
+        }
+        // add the new statuses
+        statuses.addBuffs(addedBuffs);
     }
     // todo awaiting test: order of multiple hypixel debuffs at the same time.
 

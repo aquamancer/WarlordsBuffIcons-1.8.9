@@ -3,6 +3,7 @@ package com.aquamancer.warlordsbufficons.statuses;
 import com.google.gson.JsonObject;
 
 import java.awt.*;
+import java.util.Map;
 
 public class Status {
     private String universalName;
@@ -27,6 +28,9 @@ public class Status {
      * @param remainingDuration
      */
     public long sync(int remainingDuration) {
+        return 0;
+    }
+    public long sync(Map.Entry<String, Integer> status) {
         return 0;
     }
     public void setRemainingDuration(long duration) {
