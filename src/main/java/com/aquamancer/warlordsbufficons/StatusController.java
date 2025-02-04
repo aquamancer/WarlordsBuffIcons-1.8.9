@@ -44,12 +44,12 @@ public class StatusController {
      * @param status
      */
     public static void onChatStatus(Status status) {
-        statuses.add(status);
+        statuses.add(status, true); // todo check if config icon enabled = false
         if (status.getActionBarName().equals("")) return; // buffs not represented by the action bar
         // todo make sure this doesn't create a null pointer
         statuses.getIconCancelTasks().put(status,
               executor.schedule(() -> {
-                    statuses.remove(status);
+                    if (statuses.contains(status)) statuses.removeHard(status, true);
                     statuses.getIconCancelTasks().remove(status);
               }, 
                         KILL_DELAY_MILLIS,
@@ -93,7 +93,7 @@ public class StatusController {
         List<Map.Entry<String, Integer>> addedDebuffs = ActionBarStatuses.getAdditions(previousActionBar.getDebuffs(), recentActionBar.getDebuffs(), deletedDebuffs);
 
         for (Integer deletedBuff : deletedBuffs) {
-            statuses.remove(deletedBuff, false);
+            statuses.removeSoft(deletedBuff, false);
         }
     }
     // todo awaiting test: order of multiple hypixel debuffs at the same time.
