@@ -1,5 +1,5 @@
 {
-  "TIME_WARP": {
+  "timeWarp": {
     "actionBarName": "WARP",
     "enabled": true,
     "type": "BUFF",
@@ -12,7 +12,7 @@
       "enabled": false
     }
   },
-  "CHAIN_LIGHTNING": {
+  "chainLightning": {
     "actionBarName": "CHAIN",
     "enabled": true,
     "type": "BUFF",

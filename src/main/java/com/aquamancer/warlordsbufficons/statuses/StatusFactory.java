@@ -7,17 +7,19 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 /**
- * Disabled icons will not be present in the Maps.
+ * Disabled icons will not be present in the Maps.<br>
+ * 
  */
 public class StatusFactory {
-    private static Map<String, Supplier<Status>> fromUniversalName;
-    private static Map<String, Supplier<Status>> fromActionBarName;
+    private static Map<String, JsonObject> fromUniversalName;
+    private static Map<String, JsonObject> fromActionBarName;
     
-    public static void fromJson(JsonObject json) {
+    public static void loadJson(JsonObject json) {
         for (Map.Entry<String, JsonElement> status : json.entrySet()) {
             JsonObject statusFields = status.getValue().getAsJsonObject();
             if (!statusFields.get("enabled").getAsBoolean()) continue;
-            fromUniversalName.put(status.getKey(), () -> new Status(statusFields));
+            fromUniversalName.put(status.getKey(), statusFields);
+            fromActionBarName.put(statusFields.get("actionBarName").getAsString(), statusFields);
         }
     }
     public static Status createStatus(String universalName) {
