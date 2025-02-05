@@ -35,10 +35,6 @@ public class Statuses {
     private List<Status> displayedBuffs;
     private List<Status> displayedDebuffs;
     
-    private Map<Status, ScheduledFuture<?>> iconCancelTasks;
-
-    private static int REMOVE_THRESHOLD_MIN = 150; // todo make configurable
-
     public Statuses() {
         this.buffs = new ArrayList<>();
         this.debuffs = new ArrayList<>();

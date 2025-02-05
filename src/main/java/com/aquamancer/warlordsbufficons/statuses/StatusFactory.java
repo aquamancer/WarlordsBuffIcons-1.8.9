@@ -23,4 +23,7 @@ public class StatusFactory {
     public static Status createStatus(String universalName) {
         return fromUniversalName.get(universalName).get();
     }
+    public static Status createStatus(String actionBarName, boolean isHypixelDebuff, boolean premature) {
+        return new Status(actionBarName, isHypixelDebuff, premature);
+    }
 }

@@ -2,6 +2,7 @@ package com.aquamancer.warlordsbufficons;
 
 import com.aquamancer.warlordsbufficons.statuses.ActionBarStatuses;
 import com.aquamancer.warlordsbufficons.statuses.Status;
+import com.aquamancer.warlordsbufficons.statuses.StatusFactory;
 import com.aquamancer.warlordsbufficons.statuses.Statuses;
 import net.minecraft.util.IChatComponent;
 
@@ -21,15 +22,11 @@ public class StatusController {
     private static ActionBarStatuses previousActionBar;
     private static Statuses statuses;
     
-    private static ScheduledThreadPoolExecutor executor = null;
     // todo make this configurable
     private static int KILL_DELAY_MILLIS = 1000;
     public static void init() {
         previousActionBar = new ActionBarStatuses();
         statuses = new Statuses();
-        // todo shut this down after game end
-        executor = new ScheduledThreadPoolExecutor(Runtime.getRuntime().availableProcessors() * 2);
-        executor.setRemoveOnCancelPolicy(true);
     }
 
     /**
@@ -45,14 +42,7 @@ public class StatusController {
     public static void onChatStatus(Status status) {
         statuses.add(status, true); // todo check if config icon enabled = false
         if (status.getActionBarName().equals("")) return; // buffs not represented by the action bar
-        // todo make sure this doesn't create a null pointer
-        statuses.getIconCancelTasks().put(status,
-              executor.schedule(() -> {
-                    if (statuses.contains(status)) statuses.removeHard(status, true);
-                    statuses.getIconCancelTasks().remove(status);
-              }, 
-                        KILL_DELAY_MILLIS,
-                        TimeUnit.MILLISECONDS));
+        statuses.add(StatusFactory.createStatus())
     }
     /*
         ACTION BAR METHODS -------------------------------------------------------
@@ -92,10 +82,10 @@ public class StatusController {
         List<Map.Entry<String, Integer>> addedDebuffs = ActionBarStatuses.getAdditions(previousActionBar.getDebuffs(), recentActionBar.getDebuffs(), deletedDebuffs);
 
         for (Integer deletedBuff : deletedBuffs) {
-            statuses.removeSoft(deletedBuff, false);
+            statuses.removeSoft(deletedBuff, false); // might be better to remove hard
         }
         // sync the durations of existing statuses up to statuses that have just been added
-        // statuses/mirrored buffs has not yet been updated with the new buffs, so its size will be <= recentActionBar
+        // master and mirrored statuses have not yet been updated with the new buffs, so its size will be <= recentActionBar
         for (int i = 0; i < statuses.getMirroredBuffs().size(); i++) {
             statuses.getMirroredBuffs().get(i).sync(recentActionBar.getBuffs().get(i));
         }

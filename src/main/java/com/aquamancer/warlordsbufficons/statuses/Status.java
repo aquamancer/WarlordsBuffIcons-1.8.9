@@ -8,8 +8,16 @@ import java.util.Map;
 public class Status {
     private String universalName;
     private String actionBarName;
+    private Color border;
+
+
+    /*
+     * Custom fields for runtime
+     */
     private boolean isHypixelDebuff;
     private int indexOnActionBar;
+    private boolean premature;
+    private int prematureTimeout;
     // millis
     private long initialDuration;
     private long remainingDuration;
@@ -18,8 +26,10 @@ public class Status {
     
     private int maxStacks;
     private int stackDeltaMillis;
-    private Color border;
     public Status(JsonObject fields) {
+        
+    }
+    public Status(String actionBarName, boolean isHypixelDebuff, boolean premature) {
         
     }
 
