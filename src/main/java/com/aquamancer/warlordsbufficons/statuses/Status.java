@@ -10,7 +10,6 @@ public class Status {
     private String actionBarName;
     private Color border;
 
-
     /*
      * Custom fields for runtime
      */
@@ -48,16 +47,6 @@ public class Status {
             this.initialDuration = duration;
         }
         this.remainingDuration = duration;
-    }
-
-    /**
-     * If this status gets marked for removal, if the remaining duration is low enough, we can just let it
-     * run its remaining duration.
-     */
-    public void markForRemoval() {
-        if (this.remainingDuration < REMOVAL_TOLERANCE) {
-            // todo do something
-        }
     }
 
     public String getActionBarName() {

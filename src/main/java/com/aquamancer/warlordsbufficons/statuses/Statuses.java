@@ -34,15 +34,16 @@ public class Statuses {
      */
     private List<Status> displayedBuffs;
     private List<Status> displayedDebuffs;
+
+    private static final int REMOVE_THRESHOLD_MIN = 150; // todo make configurable
     
     public Statuses() {
         this.buffs = new ArrayList<>();
         this.debuffs = new ArrayList<>();
         this.mirroredBuffs = new ArrayList<>();
         this.mirroredDebuffs = new ArrayList<>();
-        this.iconCancelTasks = new HashMap<>();
     }
-    // todo cancel cancel task
+
     public void add(Status status, boolean addIcon) {
         if (status.isHypixelDebuff()) {
             this.debuffs.add(status);
@@ -52,14 +53,14 @@ public class Statuses {
             if (addIcon) this.displayedBuffs.add(status);
         }
     }
-    public void add(List<Map.Entry<String, Integer>> statuses, boolean isHypixelDebuff) {
+    public void add(List<Map.Entry<String, Integer>> statuses, boolean isDebuff) {
         for (Map.Entry<String, Integer> status : statuses) {
-            if (isHypixelDebuff) {
+            if (isDebuff) {
                 this.debuffs.add(StatusFactory.createStatus())
             }
         }
     }
-    public void removeHard(Status status, boolean removeIcon) {
+    public void remove(Status status, boolean removeIcon) {
         if (status.isHypixelDebuff()) {
             this.debuffs.remove(status);
             if (removeIcon) this.displayedDebuffs.remove(status);
@@ -72,18 +73,18 @@ public class Statuses {
     /**
      * Removes the Status at the index of the mirrored list from the mirrored list and the master list. If the remaining
      * duration on the status is <= REMOVE_THRESHOLD_MIN, it is only removed from the master list, so the status will
-     * expire on its own. Otherwise, it is abruptly removed from the displayed list. This is why it's called "soft."
+     * expire on its own. Otherwise, it is abruptly removed from the displayed list.
      * @param indexOnActionBar
-     * @param isHypixelDebuff
+     * @param isDebuff
      */
-    public void removeSoft(int indexOnActionBar, boolean isHypixelDebuff) {
+    public void remove(int indexOnActionBar, boolean isDebuff, boolean soft) {
         Status removed;
-        if (isHypixelDebuff) {
+        if (isDebuff) {
             removed = this.debuffs.remove(indexOnActionBar);
-            if (removed.getRemainingDuration() > REMOVE_THRESHOLD_MIN) this.displayedDebuffs.remove(removed);
+            if (!soft || removed.getRemainingDuration() > REMOVE_THRESHOLD_MIN) this.displayedDebuffs.remove(removed);
         } else {
             removed = this.buffs.remove(indexOnActionBar);
-            if (removed.getRemainingDuration() > REMOVE_THRESHOLD_MIN) this.displayedBuffs.remove(removed);
+            if (!soft || removed.getRemainingDuration() > REMOVE_THRESHOLD_MIN) this.displayedBuffs.remove(removed);
         }
     }
     public boolean contains(Status status) {

@@ -75,6 +75,7 @@ public class StatusController {
      * in this packet and are in the same index (after removals) will have their durations synced.
      * @param recentActionBar
      */
+    // todo how do we handle status name not recognized. need to maintain mirrored order no matter what
     private static void onActionBarChanged(ActionBarStatuses recentActionBar) {
         Set<Integer> deletedBuffs = ActionBarStatuses.getDeletions(previousActionBar.getBuffs(), recentActionBar.getBuffs(), statuses.getMirroredBuffs());
         List<Map.Entry<String, Integer>> addedBuffs = ActionBarStatuses.getAdditions(previousActionBar.getBuffs(), recentActionBar.getBuffs(), deletedBuffs);
@@ -82,7 +83,7 @@ public class StatusController {
         List<Map.Entry<String, Integer>> addedDebuffs = ActionBarStatuses.getAdditions(previousActionBar.getDebuffs(), recentActionBar.getDebuffs(), deletedDebuffs);
 
         for (Integer deletedBuff : deletedBuffs) {
-            statuses.removeSoft(deletedBuff, false); // might be better to remove hard
+            statuses.remove(deletedBuff, false); // alternatively can remove softly
         }
         // sync the durations of existing statuses up to statuses that have just been added
         // master and mirrored statuses have not yet been updated with the new buffs, so its size will be <= recentActionBar
@@ -90,7 +91,7 @@ public class StatusController {
             statuses.getMirroredBuffs().get(i).sync(recentActionBar.getBuffs().get(i));
         }
         // add the new statuses
-        statuses.addBuffs(addedBuffs);
+        statuses.add(addedBuffs, false);
     }
     // todo awaiting test: order of multiple hypixel debuffs at the same time.
 
