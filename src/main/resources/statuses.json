@@ -2,9 +2,9 @@
   "timeWarp": {
     "actionBarName": "WARP",
     "enabled": true,
-    "type": "BUFF",
+    "type": "buff",
     "isHypixelDebuff": false,
-    "border": "GREEN",
+    "border": "green",
     "icon": "foo.png",
     "staticInitialDuration": 5000,
     "priority": 0,
@@ -15,8 +15,8 @@
   "chainLightning": {
     "actionBarName": "CHAIN",
     "enabled": true,
-    "type": "BUFF",
-    "border": "GREEN",
+    "type": "buff",
+    "border": "green",
     "icon": "foo.png",
     "staticInitialDuration": -1,
     "priority": 0,

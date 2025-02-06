@@ -20,7 +20,16 @@ public class Status {
     // millis
     private long initialDuration;
     private long remainingDuration;
-    private long activeDuration;
+
+    /**
+     * Because of upgrades, not every status's initial duration is universal. So, to get the most accurate prediction
+     * of the actual initial duration, we log the real time it takes for the displayed duration to decrease once. We can
+     * use the average/median to estimate the precision of the initial duration. This data is managed by
+     * StatusController and also logged to statuses.json.
+     */
+    private boolean initialDurationExperimentalLogged; // whether the status duration has ticked down once and logged
+    private long initialDurationExperimental; // duration after tick down + timed time it took to tick down
+
     private long timeAdded;
     
     private int maxStacks;
@@ -28,7 +37,7 @@ public class Status {
     public Status(JsonObject fields) {
         
     }
-    public Status(String actionBarName, boolean isHypixelDebuff, boolean premature) {
+    public Status(String actionBarName, boolean isDebuff, boolean premature) {
         
     }
 
