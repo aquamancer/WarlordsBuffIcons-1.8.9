@@ -53,6 +53,12 @@ public class Statuses {
             if (addIcon) this.displayedBuffs.add(status);
         }
     }
+
+    /**
+     * Appends statuses to the end of master, mirrored, and displayed Lists.
+     * @param statuses
+     * @param isDebuff if the status is a displayed debuff, to know which mirrored list to append to.
+     */
     public void add(List<Map.Entry<String, Integer>> statuses, boolean isDebuff) {
         for (Map.Entry<String, Integer> status : statuses) {
             if (isDebuff) {
