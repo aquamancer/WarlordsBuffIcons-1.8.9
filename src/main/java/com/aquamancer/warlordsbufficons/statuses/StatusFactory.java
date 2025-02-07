@@ -30,6 +30,9 @@ public class StatusFactory {
     public static Status fromActionBarName(String actionBarName) {
         return new Status(fromActionBarName.get(actionBarName));
     }
+    public static Status fromActionBarStatus(Map.Entry<String, Integer> actionBarStatus) {
+        
+    }
     public static Status createStatus(String actionBarName, boolean isHypixelDebuff, boolean premature) {
         return new Status(actionBarName, isHypixelDebuff, premature);
     }

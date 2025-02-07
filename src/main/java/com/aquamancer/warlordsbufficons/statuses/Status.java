@@ -13,8 +13,6 @@ public class Status {
     /*
      * Custom fields for runtime
      */
-    private boolean isHypixelDebuff;
-    private int indexOnActionBar;
     private boolean premature;
     private int prematureTimeout;
     // millis
@@ -35,7 +33,7 @@ public class Status {
     private int maxStacks;
     private int stackDeltaMillis;
     public Status(JsonObject fields) {
-        
+
     }
     public Status(String actionBarName, boolean isDebuff, boolean premature) {
         

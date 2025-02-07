@@ -59,11 +59,16 @@ public class Statuses {
      * @param statuses
      * @param isDebuff if the status is a displayed debuff, to know which mirrored list to append to.
      */
-    public void add(List<Map.Entry<String, Integer>> statuses, boolean isDebuff) {
-        for (Map.Entry<String, Integer> status : statuses) {
-            if (isDebuff) {
-                this.debuffs.add(StatusFactory.createStatus())
+    public void add(List<Map.Entry<String, Integer>> actionBarStatuses, boolean isDebuff) {
+        for (Map.Entry<String, Integer> actionBarStatus : actionBarStatuses) {
+        Status status = StatusFactory.fromActionBarName(actionBarStatus.)
+            // is debuff defined by the user in the .json
+            if (status.isDebuff()) {
+
+            } else {
+
             }
+
         }
     }
     public void remove(Status status, boolean removeIcon) {
