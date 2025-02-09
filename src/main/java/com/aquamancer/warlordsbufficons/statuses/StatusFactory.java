@@ -13,27 +13,27 @@ public class StatusFactory {
     /**
      * the universal name's mapping and its action bar name mapping point to the same JsonObject
      */
-    private static Map<String, JsonObject> fromUniversalName;
-    private static Map<String, JsonObject> fromActionBarName;
+    // todo make sure program doesn't break if config is changed while icons are displayed
+    public static Map<String, JsonObject> fromUniversalName;
+    
+    private static Map<String, String> toUniversalName;
+    private static Map<String, String> stackingEnabled;
     
     public static void loadJson(JsonObject json) {
         for (Map.Entry<String, JsonElement> status : json.entrySet()) {
             JsonObject statusFields = status.getValue().getAsJsonObject();
             if (!statusFields.get("enabled").getAsBoolean()) continue;
             fromUniversalName.put(status.getKey(), statusFields);
-            fromActionBarName.put(statusFields.get("actionBarName").getAsString(), statusFields);
+            toUniversalName.put(statusFields.get("actionBarName").getAsString(), status.getKey());
         }
     }
-    public static Status fromUniversalName(String universalName) {
-        return fromUniversalName.get(universalName).get();
+    public static Status fromUniversalName(String universalName, int initialDuration) {
+        return new Status(universalName, initialDuration, fromUniversalName.get(universalName));
     }
-    public static Status fromActionBarName(String actionBarName) {
-        return new Status(fromActionBarName.get(actionBarName));
+    public static Status fromActionBarName(String actionBarName, int initialDuration) {
+        return new Status(toUniversalName(actionBarName), initialDuration, fromUniversalName.get(toUniversalName(actionBarName)));
     }
-    public static Status fromActionBarStatus(Map.Entry<String, Integer> actionBarStatus) {
-        
-    }
-    public static Status createStatus(String actionBarName, boolean isHypixelDebuff, boolean premature) {
-        return new Status(actionBarName, isHypixelDebuff, premature);
+    public static String toUniversalName(String actionBarName) {
+        return toUniversalName.get(actionBarName);
     }
 }

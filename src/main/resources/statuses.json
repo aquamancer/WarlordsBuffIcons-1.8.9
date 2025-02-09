@@ -3,10 +3,10 @@
     "actionBarName": "WARP",
     "enabled": true,
     "type": "buff",
-    "isHypixelDebuff": false,
     "border": "green",
     "icon": "foo.png",
     "staticInitialDuration": 5000,
+    "lastExperimentalInitialDuration": -1,
     "priority": 0,
     "stacking": {
       "enabled": false

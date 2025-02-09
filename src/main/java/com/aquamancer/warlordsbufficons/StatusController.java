@@ -83,7 +83,7 @@ public class StatusController {
         List<Map.Entry<String, Integer>> addedDebuffs = ActionBarStatuses.getAdditions(previousActionBar.getDebuffs(), recentActionBar.getDebuffs(), deletedDebuffs);
 
         for (Integer deletedBuff : deletedBuffs) {
-            statuses.remove(deletedBuff, false); // alternatively can remove softly
+            statuses.remove(deletedBuff, false, true); // alternatively can remove softly
         }
         // sync the durations of existing statuses up to statuses that have just been added
         // master and mirrored statuses have not yet been updated with the new buffs, so its size will be <= recentActionBar

@@ -61,7 +61,10 @@ public class Statuses {
      */
     public void add(List<Map.Entry<String, Integer>> actionBarStatuses, boolean isDebuff) {
         for (Map.Entry<String, Integer> actionBarStatus : actionBarStatuses) {
-        Status status = StatusFactory.fromActionBarName(actionBarStatus.)
+            Status status = StatusFactory.fromActionBarName(
+                    actionBarStatus.getKey(),
+                    StatusFactory.fromUniversalName.get(StatusFactory.toUniversalName(actionBarStatus.getKey())).get("")
+                    )
             // is debuff defined by the user in the .json
             if (status.isDebuff()) {
 
@@ -88,14 +91,14 @@ public class Statuses {
      * @param indexOnActionBar
      * @param isDebuff
      */
-    public void remove(int indexOnActionBar, boolean isDebuff, boolean soft) {
+    public void remove(int indexOnActionBar, boolean isDebuff, boolean cancelIcon) {
         Status removed;
         if (isDebuff) {
             removed = this.debuffs.remove(indexOnActionBar);
-            if (!soft || removed.getRemainingDuration() > REMOVE_THRESHOLD_MIN) this.displayedDebuffs.remove(removed);
+            if (cancelIcon || removed.getRemainingDuration() > REMOVE_THRESHOLD_MIN) this.displayedDebuffs.remove(removed);
         } else {
             removed = this.buffs.remove(indexOnActionBar);
-            if (!soft || removed.getRemainingDuration() > REMOVE_THRESHOLD_MIN) this.displayedBuffs.remove(removed);
+            if (cancelIcon || removed.getRemainingDuration() > REMOVE_THRESHOLD_MIN) this.displayedBuffs.remove(removed);
         }
     }
     public boolean contains(Status status) {
