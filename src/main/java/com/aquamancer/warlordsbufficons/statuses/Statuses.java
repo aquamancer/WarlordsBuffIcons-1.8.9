@@ -18,8 +18,7 @@ public class Statuses {
      * cleansed before the action bar updated). There will be a timeout time constant where if the status was not
      * reflected in the action bar after x millis, the status from chat will be deleted.
      */
-    private List<Status> predictedBuffs;
-    private List<Status> predictedDebuffs;
+    private List<PrematureStatus> prematureStatuses;
     /**
      * Contains references to elements in allStatuses, but only contains ones that are currently displayed
      * in the action bar, and is kept in the same order.<br>
@@ -35,6 +34,12 @@ public class Statuses {
     private List<Status> displayedBuffs;
     private List<Status> displayedDebuffs;
 
+    /**
+     * Map&lt;universalName, &lt;rolling sum, n&gt;&gt; that stores the time it takes for each
+     * status to tick down once. This is used to calculate the actual initial durations of statuses.
+     */
+    private Map<String, Map.Entry<Integer, Integer>> experimentalInitialDurations;
+
     private static final int REMOVE_THRESHOLD_MIN = 150; // todo make configurable
     
     public Statuses() {
@@ -42,37 +47,59 @@ public class Statuses {
         this.debuffs = new ArrayList<>();
         this.mirroredBuffs = new ArrayList<>();
         this.mirroredDebuffs = new ArrayList<>();
+        this.experimentalInitialDurations = new HashMap<>();
+        this.prematureStatuses = new ArrayList<>();
     }
 
-    public void add(Status status, boolean addIcon) {
-        if (status.isHypixelDebuff()) {
+    public void add(Status status, boolean isDebuff) {
+        if (isDebuff) {
             this.debuffs.add(status);
-            if (addIcon) this.displayedDebuffs.add(status);
+            if (status.isEnabled()) this.displayedDebuffs.add(status);
+            this.mirroredDebuffs.add(status);
         } else {
             this.buffs.add(status);
-            if (addIcon) this.displayedBuffs.add(status);
+            
+        }
+    }
+
+    // todo need to distinguish isDebuff defined by the user and isHypixelDebuff. they could be different
+    public void processNewStatusesFromActionBar(List<Map.Entry<String, Integer>> actionBarStatuses, boolean isDebuff) {
+        for (Map.Entry<String, Integer> actionBarStatus : actionBarStatuses) {
+            Status status = StatusFactory.fromActionBarName(
+                    actionBarStatus.getKey(),
+                    StatusFactory.calculateInitialDuration(actionBarStatus, experimentalInitialDurations)
+                    );
+            if (isDebuff) {
+                // check if there is a premature status queued
+                for (int i = 0; i < this.prematureStatuses.size(); i++) {
+                    if (this.prematureStatuses.get(i).getActionBarName().equals(actionBarStatus.getKey())) {
+                        
+                    }
+                }
+                this.debuffs.add(status);
+                if (status.isEnabled()) this.displayedDebuffs.add(status);
+                this.mirroredDebuffs.add(status);
+                // handle premature stuff
+                
+                prematureDebuffs.clear();
+            } else {
+                this.buffs.add(status);
+                if (status.isEnabled()) this.displayedBuffs.add(status);
+                this.mirroredBuffs.add(status);
+                // todo cancel premature cancel 
+            }
         }
     }
 
     /**
-     * Appends statuses to the end of master, mirrored, and displayed Lists.
-     * @param statuses
-     * @param isDebuff if the status is a displayed debuff, to know which mirrored list to append to.
+     * For statuses that are guaranteed to not be reflected by the action bar.
+     * @param status
      */
-    public void add(List<Map.Entry<String, Integer>> actionBarStatuses, boolean isDebuff) {
-        for (Map.Entry<String, Integer> actionBarStatus : actionBarStatuses) {
-            Status status = StatusFactory.fromActionBarName(
-                    actionBarStatus.getKey(),
-                    StatusFactory.fromUniversalName.get(StatusFactory.toUniversalName(actionBarStatus.getKey())).get("")
-                    )
-            // is debuff defined by the user in the .json
-            if (status.isDebuff()) {
-
-            } else {
-
-            }
-
-        }
+    public void processStatusFromChat(Status status) {
+        
+    }
+    public void processPrematureStatus(PrematureStatus status, boolean isDebuff) {
+        
     }
     public void remove(Status status, boolean removeIcon) {
         if (status.isHypixelDebuff()) {

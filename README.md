@@ -1,1 +1,1 @@
-wip
+displayed remaining duration interval = [t - 1, t)

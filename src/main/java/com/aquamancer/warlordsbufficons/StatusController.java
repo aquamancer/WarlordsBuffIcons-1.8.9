@@ -1,9 +1,6 @@
 package com.aquamancer.warlordsbufficons;
 
-import com.aquamancer.warlordsbufficons.statuses.ActionBarStatuses;
-import com.aquamancer.warlordsbufficons.statuses.Status;
-import com.aquamancer.warlordsbufficons.statuses.StatusFactory;
-import com.aquamancer.warlordsbufficons.statuses.Statuses;
+import com.aquamancer.warlordsbufficons.statuses.*;
 import net.minecraft.util.IChatComponent;
 
 import java.util.*;
@@ -39,9 +36,9 @@ public class StatusController {
      * There can be a delay of about 750ms from chat message to action bar reflecting the event.
      * @param status
      */
-    public static void onChatStatus(Status status) {
+    public static void onChatStatus(PrematureStatus status) {
         statuses.add(status, true); // todo check if config icon enabled = false
-        if (status.getActionBarName().equals("")) return; // buffs not represented by the action bar
+//        if (status.getActionBarName().equals("")) // buffs not represented by the action bar
         statuses.add(StatusFactory.createStatus())
     }
     /*
@@ -91,7 +88,15 @@ public class StatusController {
             statuses.getMirroredBuffs().get(i).sync(recentActionBar.getBuffs().get(i));
         }
         // add the new statuses
-        statuses.add(addedBuffs, false);
+        statuses.processNewStatusesFromActionBar(addedBuffs, false);
+        
+        for (Integer deletedDebuff : deletedDebuffs) {
+            statuses.remove(deletedDebuff, true, true);
+        }
+        for (int i = 0; i < statuses.getMirroredDebuffs().size(); i++) {
+            statuses.getMirroredBuffs().get(i).sync(recentActionBar.getDebuffs().get(i));
+        }
+        statuses.processNewStatusesFromActionBar(addedDebuffs, true);
     }
     // todo awaiting test: order of multiple hypixel debuffs at the same time.
 

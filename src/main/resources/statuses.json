@@ -2,11 +2,12 @@
   "timeWarp": {
     "actionBarName": "WARP",
     "enabled": true,
+    "isHypixelDebuff": false,
     "type": "buff",
     "border": "green",
     "icon": "foo.png",
-    "staticInitialDuration": 5000,
-    "lastExperimentalInitialDuration": -1,
+    "manualInitialDuration": -1,
+    "experimentalInitialDuration": -1,
     "priority": 0,
     "stacking": {
       "enabled": false
