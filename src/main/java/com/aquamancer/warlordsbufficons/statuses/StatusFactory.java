@@ -56,7 +56,7 @@ public class StatusFactory {
         int previousExperimentalDuration = fromUniversalName.get(universalName).get(EXPERIMENTAL_INITIAL_DURATION).getAsInt();
         if (withinIntervalInclusive(displayedRemainingDuration, previousExperimentalDuration)) return previousExperimentalDuration;
         // default
-        return displayedRemainingDuration * 1000 + 500;
+        return displayedRemainingDuration * 1000 - 500;
     }
 
     /**
