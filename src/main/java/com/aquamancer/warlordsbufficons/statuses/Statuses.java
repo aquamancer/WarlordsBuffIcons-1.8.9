@@ -6,6 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ScheduledFuture;
 
+/**
+ * All isDebuff parameters refer to "is debuff according to the action bar." This is needed to determine
+ * which mirrored list to insert the status to.
+ */
 public class Statuses {
     /**
      * "master" list that tracks all statuses on the player.
@@ -28,8 +32,9 @@ public class Statuses {
     private List<Status> mirroredDebuffs;
 
     /**
-     * Lists of statuses that are actually displayed by the program. Used for functionality of removeSoft and
-     * if the user configs to not display the status.
+     * Lists of statuses that are actually displayed by the program. Used for functionality of removeSoft (remove
+     * status from displayed list but still present in the mirrored; ALTERNATIVE: removeSoft just sets enabled
+     * field to false), and if the user configs to not display the status.
      */
     private List<Status> displayedBuffs;
     private List<Status> displayedDebuffs;
@@ -52,17 +57,10 @@ public class Statuses {
     }
 
     public void add(Status status, boolean isDebuff) {
-        if (isDebuff) {
-            this.debuffs.add(status);
-            if (status.isEnabled()) this.displayedDebuffs.add(status);
-            this.mirroredDebuffs.add(status);
-        } else {
-            this.buffs.add(status);
-            
-        }
+        
     }
 
-    // todo need to distinguish isDebuff defined by the user and isHypixelDebuff. they could be different
+
     public void processNewStatusesFromActionBar(List<Map.Entry<String, Integer>> actionBarStatuses, boolean isDebuff) {
         for (Map.Entry<String, Integer> actionBarStatus : actionBarStatuses) {
             Status status = StatusFactory.fromActionBarName(
