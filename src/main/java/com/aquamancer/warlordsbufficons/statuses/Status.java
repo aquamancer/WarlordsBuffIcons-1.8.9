@@ -77,8 +77,8 @@ public class Status {
     public long getRemainingDuration() {
         return remainingDuration;
     }
-    public boolean isHypixelDebuff() {
-        return this.isHypixelDebuff;
+    public String getUniversalName() {
+        return this.universalName;
     }
 }
 

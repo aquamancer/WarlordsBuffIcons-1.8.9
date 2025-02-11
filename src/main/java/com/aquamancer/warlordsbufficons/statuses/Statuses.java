@@ -18,11 +18,10 @@ public class Statuses {
     private List<Status> debuffs;
     /**
      * Lists of statuses that have been added instantly on chat identification. We have a separate list to handle
-     * in case the status that was added due to a chat event did not end up being reflected in the action bar (ex.
-     * cleansed before the action bar updated). There will be a timeout time constant where if the status was not
-     * reflected in the action bar after x millis, the status from chat will be deleted.
+     * in case the status that was added due to a chat event did not end up being reflected in the action bar's
+     * next status update. (ex. cleansed before the action bar updated).
      */
-    private List<PrematureStatus> prematureStatuses;
+    private List<Status> prematureStatuses;
     /**
      * Contains references to elements in allStatuses, but only contains ones that are currently displayed
      * in the action bar, and is kept in the same order.<br>
@@ -56,8 +55,35 @@ public class Statuses {
         this.prematureStatuses = new ArrayList<>();
     }
 
-    public void add(Status status, boolean isDebuff) {
-        
+    public void add(Status status, boolean isActionBarDebuff, boolean premature) {
+        if (premature) {
+            this.prematureStatuses.add(status);
+            return;
+        }
+        // try to match with a queued premature status with the same name
+        for (int i = 0; i < this.prematureStatuses.size(); i++) {
+            // if the name of status to be added = name of premature status
+            if (status.getUniversalName().equals(this.prematureStatuses.get(i).getUniversalName())) {
+                this.add(this.prematureStatuses.get(i), isActionBarDebuff);
+                this.prematureStatuses.remove(i);
+                return;
+            }
+        }
+        this.add(status, isActionBarDebuff);
+    }
+    public void add(Status status, boolean isActionBarDebuff) {
+        if (status.isDebuff()) {
+            this.debuffs.add(status);
+            if (status.iconEnabled()) displayedDebuffs.add(status);
+        } else {
+            this.buffs.add(status);
+            if (status.iconEnabled()) displayedBuffs.add(status);
+        }
+        if (isActionBarDebuff) {
+            this.mirroredDebuffs.add(status);
+        } else {
+            this.mirroredBuffs.add(status);
+        }
     }
 
 
@@ -67,25 +93,7 @@ public class Statuses {
                     actionBarStatus.getKey(),
                     StatusFactory.calculateInitialDuration(actionBarStatus, experimentalInitialDurations)
                     );
-            if (isDebuff) {
-                // check if there is a premature status queued
-                for (int i = 0; i < this.prematureStatuses.size(); i++) {
-                    if (this.prematureStatuses.get(i).getActionBarName().equals(actionBarStatus.getKey())) {
-                        
-                    }
-                }
-                this.debuffs.add(status);
-                if (status.isEnabled()) this.displayedDebuffs.add(status);
-                this.mirroredDebuffs.add(status);
-                // handle premature stuff
-                
-                prematureDebuffs.clear();
-            } else {
-                this.buffs.add(status);
-                if (status.isEnabled()) this.displayedBuffs.add(status);
-                this.mirroredBuffs.add(status);
-                // todo cancel premature cancel 
-            }
+
         }
     }
 
