@@ -4,7 +4,11 @@ import com.aquamancer.warlordsbufficons.statuses.BuffEnum;
 import com.aquamancer.warlordsbufficons.statuses.DebuffEnum;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,11 +32,19 @@ public class ChatAbilityIdentifiers {
      * Universal name mapped with a supplier of boolean (whether the chat contains that identifier) for
      * chat messages with the bit left shift operator.
      */
+    private static final String JSON_NAME = "chatidentifiers.json";
     private static Map<String, Supplier<Boolean>> operationsOutgoing;
     public static void loadChatMatches() {
         operationsIncoming = new HashMap<>();
         operationsOutgoing = new HashMap<>();
-        JsonElement json = JsonElement.parseReader()
+
+        try (InputStream jsonStream = ChatAbilityIdentifiers.class.getClassLoader().getResourceAsStream(JSON_NAME)) {
+            JsonParser parser = new JsonParser();
+
+            JsonElement json = parser.parse()
+        } catch (IOException ex){
+
+        }
     }
     public static String getDebuffMatches(String s) {
         // gather all methods into a List

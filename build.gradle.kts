@@ -91,7 +91,7 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.7.1")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.7.1")
     // updated gson
-    // api("com.google.gson:2.12.1")
+//    implementation("com.google.code.gson:2.12.1")
 }
 
 // Tasks:
