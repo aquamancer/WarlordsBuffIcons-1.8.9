@@ -2,16 +2,38 @@ package com.aquamancer.warlordsbufficons.handlers;
 
 import com.aquamancer.warlordsbufficons.statuses.BuffEnum;
 import com.aquamancer.warlordsbufficons.statuses.DebuffEnum;
+import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
 /**
  * Provides methods that identify whether a String(chat message) indicates an event that affects buffs/debuffs.
  */
 public class ChatAbilityIdentifiers {
-    // todo instead of adding Suppliers on getMatches, add on init
+    /**
+     * We split the identifiers into those with the bit left and right shift operators, to reduce the amount
+     * of contains() checks per chat message.
+     */
+    /**
+     * Universal name mapped with a supplier of boolean (whether the chat contains that identifier) for
+     * chat messages with the bit right shift operator.
+     */
+    private static Map<String, Supplier<Boolean>> operationsIncoming;
+    /**
+     * Universal name mapped with a supplier of boolean (whether the chat contains that identifier) for
+     * chat messages with the bit left shift operator.
+     */
+    private static Map<String, Supplier<Boolean>> operationsOutgoing;
+    public static void loadChatMatches() {
+        operationsIncoming = new HashMap<>();
+        operationsOutgoing = new HashMap<>();
+        JsonElement json = JsonElement.parseReader()
+    }
     public static String getDebuffMatches(String s) {
         // gather all methods into a List
         List<Supplier<String>> operations = new ArrayList<>();
