@@ -8,17 +8,13 @@ import java.util.regex.Pattern;
 
 public class StatusController {
     private static final Pattern WARLORDS_ACTIONBAR_IDENTIFIER = Pattern.compile(".*\\d+/\\d+.*");
+
     /**
-     * Used to compare if the recent action bar changed event indicates any changes to the buffs.<br>
-     * 2d list of length 2 -> [list of buffs, list of debuffs].<br>
-     * String = raw name/abbr of the buff as displayed in game.<br>
-     * Integer = duration remaining
+     * Represents previous raw actionbar data
      */
     private static ActionBarStatuses previousActionBar;
     private static Statuses statuses;
     
-    // todo make this configurable
-    private static int KILL_DELAY_MILLIS = 1000;
     public static void init() {
         previousActionBar = new ActionBarStatuses();
         statuses = new Statuses();
@@ -31,8 +27,7 @@ public class StatusController {
      */
 
     /**
-     * Hypixel Warlords action bar appends new buffs on the right of the action bar, with debuffs pinned
-     * to the right.
+     * Handles every action bar packet received.
      * @param bar
      */
     public static void onActionBarPacketReceived(IChatComponent bar) {
