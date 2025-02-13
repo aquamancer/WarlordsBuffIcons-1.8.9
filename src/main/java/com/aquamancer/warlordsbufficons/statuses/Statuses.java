@@ -108,7 +108,14 @@ public class Statuses {
      * Adds custom statuses that are guaranteed to not be reflected by the action bar.
      * @param status the custom status to be added
      */
-    public void processCustomStatus(Status status) {
+    public void processCustomChatStatus(Status status) {
+        if (status.isDebuff()) {
+            this.debuffs.add(status);
+            if (status.iconEnabled()) displayedDebuffs.add(status);
+        } else {
+            this.buffs.add(status);
+            if (status.iconEnabled()) displayedBuffs.add(status);
+        }
     }
 
     /**

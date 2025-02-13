@@ -3,6 +3,7 @@ package com.aquamancer.warlordsbufficons.statuses;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -24,6 +25,9 @@ public class StatusFactory {
     private static final String EXPERIMENTAL_INITIAL_DURATION = "experimentalInitialDuration"; // required for all objects in json otherwise nullpointerexception
     
     public static void loadJson(JsonObject json) {
+        fromUniversalName = new HashMap<>();
+        toUniversalName = new HashMap<>();
+        
         for (Map.Entry<String, JsonElement> status : json.entrySet()) {
             JsonObject statusFields = status.getValue().getAsJsonObject();
             fromUniversalName.put(status.getKey(), statusFields);
