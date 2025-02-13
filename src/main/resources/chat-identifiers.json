@@ -1,0 +1,15 @@
+{
+  "incoming": {
+    "wounded": {
+      "contains": "Wounding Strike hit you"
+    },
+    "crippled": {
+      "contains": "Crippling Strike hit you"
+    }
+  },
+  "outgoing": {
+    "universalName99": {
+      "contains": ""
+    }
+  }
+}
