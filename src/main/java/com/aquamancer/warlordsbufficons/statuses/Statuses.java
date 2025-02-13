@@ -55,6 +55,13 @@ public class Statuses {
         this.prematureStatuses = new ArrayList<>();
     }
 
+    /**
+     * If premature, adds to prematureStatuses. Else if there is an existing premature status with the same name
+     * of the incoming status, adds the premature status to the lists instead. Else add to the lists.
+     * @param status the incoming/new status to add
+     * @param isActionBarDebuff whether the displayed action bar classifies the new status as a debuff
+     * @param premature if the new status is a premature status
+     */
     public void add(Status status, boolean isActionBarDebuff, boolean premature) {
         if (premature) {
             this.prematureStatuses.add(status);
@@ -64,14 +71,14 @@ public class Statuses {
         for (int i = 0; i < this.prematureStatuses.size(); i++) {
             // if the name of status to be added = name of premature status
             if (status.getUniversalName().equals(this.prematureStatuses.get(i).getUniversalName())) {
-                this.add(this.prematureStatuses.get(i), isActionBarDebuff);
+                this.addToAll(this.prematureStatuses.get(i), isActionBarDebuff);
                 this.prematureStatuses.remove(i);
                 return;
             }
         }
-        this.add(status, isActionBarDebuff);
+        this.addToAll(status, isActionBarDebuff);
     }
-    public void add(Status status, boolean isActionBarDebuff) {
+    private void addToAll(Status status, boolean isActionBarDebuff) {
         if (status.isDebuff()) {
             this.debuffs.add(status);
             if (status.iconEnabled()) displayedDebuffs.add(status);
@@ -87,34 +94,21 @@ public class Statuses {
     }
 
 
-    public void processNewStatusesFromActionBar(List<Map.Entry<String, Integer>> actionBarStatuses, boolean isDebuff) {
+    public void processNewActionBarStatus(List<Map.Entry<String, Integer>> actionBarStatuses, boolean isActionBarDebuff) {
         for (Map.Entry<String, Integer> actionBarStatus : actionBarStatuses) {
             Status status = StatusFactory.fromActionBarName(
                     actionBarStatus.getKey(),
                     StatusFactory.calculateInitialDuration(actionBarStatus, experimentalInitialDurations)
                     );
-
+            this.add(status, isActionBarDebuff, false);
         }
     }
 
     /**
-     * For statuses that are guaranteed to not be reflected by the action bar.
-     * @param status
+     * Adds custom statuses that are guaranteed to not be reflected by the action bar.
+     * @param status the custom status to be added
      */
-    public void processStatusFromChat(Status status) {
-        
-    }
-    public void processPrematureStatus(PrematureStatus status, boolean isDebuff) {
-        
-    }
-    public void remove(Status status, boolean removeIcon) {
-        if (status.isHypixelDebuff()) {
-            this.debuffs.remove(status);
-            if (removeIcon) this.displayedDebuffs.remove(status);
-        } else {
-            this.buffs.remove(status);
-            if (removeIcon) this.displayedBuffs.remove(status);
-        }
+    public void processCustomStatus(Status status) {
     }
 
     /**
@@ -133,6 +127,9 @@ public class Statuses {
             removed = this.buffs.remove(indexOnActionBar);
             if (cancelIcon || removed.getRemainingDuration() > REMOVE_THRESHOLD_MIN) this.displayedBuffs.remove(removed);
         }
+    }
+    public void clearPrematureStatuses() {
+        this.prematureStatuses.clear();
     }
     public boolean contains(Status status) {
         return this.buffs.contains(status) || this.debuffs.contains(status);
@@ -154,7 +151,4 @@ public class Statuses {
         return mirroredDebuffs;
     }
 
-    public Map<Status, ScheduledFuture<?>> getIconCancelTasks() {
-        return iconCancelTasks;
-    }
 }

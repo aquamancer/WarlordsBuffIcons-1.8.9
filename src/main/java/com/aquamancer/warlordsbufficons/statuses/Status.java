@@ -8,12 +8,11 @@ import java.util.Map;
 public class Status {
     private String universalName;
     private String actionBarName;
+    private boolean isDebuff, iconEnabled;
     private Color border;
     /*
      * Custom fields for runtime
      */
-    private boolean premature;
-    private int prematureTimeout;
     // millis
     private int initialDuration;
     private int remainingDuration;
@@ -79,6 +78,12 @@ public class Status {
     }
     public String getUniversalName() {
         return this.universalName;
+    }
+    public boolean isDebuff() {
+        return this.isDebuff;
+    }
+    public boolean iconEnabled() {
+        return this.iconEnabled;
     }
 }
 

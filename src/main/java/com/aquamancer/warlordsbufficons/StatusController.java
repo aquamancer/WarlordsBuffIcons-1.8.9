@@ -4,8 +4,6 @@ import com.aquamancer.warlordsbufficons.statuses.*;
 import net.minecraft.util.IChatComponent;
 
 import java.util.*;
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 public class StatusController {
@@ -26,20 +24,7 @@ public class StatusController {
         statuses = new Statuses();
     }
 
-    /**
-     * Called when the chat handler identifies and returns a Status. This method immediately adds the status to be 
-     * displayed. If the status is not represented by the action bar, e.g. slows, the icon run its entire duration
-     * no matter what (subject to change - can identify cleanses or something). However, if the status should be
-     * represented by the action bar, e.g. time warp, a task to kill the icon is initialized, set to a certain delay.
-     * This task will be canceled if the action bar represents the change within that delay.
-     * We cancel the task in case the status was cleansed before the action bar reflected the change in chat.
-     * There can be a delay of about 750ms from chat message to action bar reflecting the event.
-     * @param status
-     */
-    public static void onChatStatus(PrematureStatus status) {
-        statuses.add(status, true); // todo check if config icon enabled = false
-//        if (status.getActionBarName().equals("")) // buffs not represented by the action bar
-        statuses.add(StatusFactory.createStatus())
+    public static void onChatStatus(Status status) {
     }
     /*
         ACTION BAR METHODS -------------------------------------------------------
@@ -56,7 +41,7 @@ public class StatusController {
         if (!WARLORDS_ACTIONBAR_IDENTIFIER.matcher(message).find()) return;
         ActionBarStatuses currentActionBar = parseStatusesFromActionBar(bar);
         if (currentActionBar.equals(previousActionBar)) return;
-        onActionBarChanged(currentActionBar);
+        onActionBarStatusesChanged(currentActionBar);
         
         previousActionBar = currentActionBar;
     }
@@ -73,7 +58,7 @@ public class StatusController {
      * @param recentActionBar
      */
     // todo how do we handle status name not recognized. need to maintain mirrored order no matter what
-    private static void onActionBarChanged(ActionBarStatuses recentActionBar) {
+    private static void onActionBarStatusesChanged(ActionBarStatuses recentActionBar) {
         Set<Integer> deletedBuffs = ActionBarStatuses.getDeletions(previousActionBar.getBuffs(), recentActionBar.getBuffs(), statuses.getMirroredBuffs());
         List<Map.Entry<String, Integer>> addedBuffs = ActionBarStatuses.getAdditions(previousActionBar.getBuffs(), recentActionBar.getBuffs(), deletedBuffs);
         Set<Integer> deletedDebuffs = ActionBarStatuses.getDeletions(previousActionBar.getDebuffs(), recentActionBar.getDebuffs(), statuses.getMirroredDebuffs());
@@ -88,7 +73,7 @@ public class StatusController {
             statuses.getMirroredBuffs().get(i).sync(recentActionBar.getBuffs().get(i));
         }
         // add the new statuses
-        statuses.processNewStatusesFromActionBar(addedBuffs, false);
+        statuses.processNewActionBarStatus(addedBuffs, false);
         
         for (Integer deletedDebuff : deletedDebuffs) {
             statuses.remove(deletedDebuff, true, true);
@@ -96,15 +81,7 @@ public class StatusController {
         for (int i = 0; i < statuses.getMirroredDebuffs().size(); i++) {
             statuses.getMirroredBuffs().get(i).sync(recentActionBar.getDebuffs().get(i));
         }
-        statuses.processNewStatusesFromActionBar(addedDebuffs, true);
-    }
-    // todo awaiting test: order of multiple hypixel debuffs at the same time.
-
-    /**
-     * Based on the previous action bar and recent raw action bar data, parse and construct currentStatusBar. <br>
-     * This entails assigning currentActionBar to a shallow copy of previousActionBar, then removing and adding
-     * new statuses based on the result of parsing algorithm of the raw action bar data. 
-     */
-    private static void constructCurrentStatuses(List<Map.Entry<String, Integer>> rawActionBarData) {
+        statuses.processNewActionBarStatus(addedDebuffs, true);
+        statuses.clearPrematureStatuses();
     }
 }
