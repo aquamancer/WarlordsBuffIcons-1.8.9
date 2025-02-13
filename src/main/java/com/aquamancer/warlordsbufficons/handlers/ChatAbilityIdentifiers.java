@@ -11,9 +11,10 @@ import java.util.function.Supplier;
  * Provides methods that identify whether a String(chat message) indicates an event that affects buffs/debuffs.
  */
 public class ChatAbilityIdentifiers {
-    public static List<DebuffEnum> getDebuffMatches(String s) {
+    // todo instead of adding Suppliers on getMatches, add on init
+    public static String getDebuffMatches(String s) {
         // gather all methods into a List
-        List<Supplier<DebuffEnum>> operations = new ArrayList<>();
+        List<Supplier<String>> operations = new ArrayList<>();
         operations.add(() -> slowedFrostbolt(s));
         operations.add(() -> slowedFreezingBreath(s));
         operations.add(() -> wounded(s));
@@ -21,11 +22,11 @@ public class ChatAbilityIdentifiers {
         operations.add(() -> undyingArmyPopped(s));
         
         // collect all debuff matches
-        List<DebuffEnum> result = new ArrayList<>();
-        for (Supplier<DebuffEnum> operation : operations) {
+        List<String> result = new ArrayList<>();
+        for (Supplier<String> operation : operations) {
             // add the Debuff match to result if the method call does not return NONE
-            DebuffEnum value = operation.get(); // evaluate the method
-            if (value != DebuffEnum.NONE)
+            String value = operation.get(); // evaluate the method
+            if (value != null)
                 result.add(value);
         }
         return result;
@@ -55,18 +56,18 @@ public class ChatAbilityIdentifiers {
     // todo pyro arcane shield stun?
     // cryomancer
     // todo meleeing an ice barrier
-    private static DebuffEnum slowedFrostbolt(String s) {
-        return s.contains("Frostbolt hit you") ? DebuffEnum.SLOW_FROSTBOLT : DebuffEnum.NONE;
+    private static String slowedFrostbolt(String s) {
+        return s.contains("Frostbolt hit you") ? "slowFrostbolt" : null;
     }
-    private static DebuffEnum slowedFreezingBreath(String s) {
-        return s.contains("Freezing Breath hit you") ? DebuffEnum.SLOW_FREEZING_BREATH : DebuffEnum.NONE;
+    private static String slowedFreezingBreath(String s) {
+        return s.contains("Freezing Breath hit you") ? "slowFreezingBreath" : null;
     }
     // aquamancer
     
     // WARRIOR
     // bers
-    public static DebuffEnum wounded(String s) {
-        return s.contains("Wounding Strike hit you") ? DebuffEnum.WOUNDED : DebuffEnum.NONE;
+    public static String wounded(String s) {
+        return s.contains("Wounding Strike hit you") ? "wounding" : null;
     }
     // rev
     public static DebuffEnum crippled(String s) {
