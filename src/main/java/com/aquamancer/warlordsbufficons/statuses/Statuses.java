@@ -162,5 +162,7 @@ public class Statuses {
     public List<Status> getMirroredDebuffs() {
         return mirroredDebuffs;
     }
-
+    public Map<String, Map.Entry<Integer, Integer>> getExperimentalInitialDurations() {
+        return this.experimentalInitialDurations;
+    }
 }

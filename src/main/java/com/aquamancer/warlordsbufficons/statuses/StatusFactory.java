@@ -4,11 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
-import java.util.stream.IntStream;
 
 public class StatusFactory {
     /**
@@ -62,7 +58,7 @@ public class StatusFactory {
         // default
         return displayedRemainingDuration * 1000 - 500;
     }
-
+    
     /**
      * Determines if the displayedRemainingDuration can be representative of query remaining duration, inclusive.<br>
      * Being inclusive on the right limit is technically incorrect, but is needed for manual initial duration
@@ -80,5 +76,22 @@ public class StatusFactory {
      */
     public static boolean withinIntervalInclusive(int displayedRemainingDuration, int query) {
         return query >= displayedRemainingDuration * 1000 - 1000 && query <= displayedRemainingDuration * 1000;
+    }
+
+    /**
+     * 
+     * @param universalName
+     * @param experimental
+     * @return
+     */
+    public static int calculateInitialDuration(String universalName, Map<String, Map.Entry<Integer, Integer>> experimental) {
+        int manualInitialDuration = fromUniversalName.get(universalName).get(MANUAL_INITIAL_DURATION).getAsInt();
+        if (manualInitialDuration > 0)
+            return manualInitialDuration;
+        
+        if (experimental.containsKey(universalName))
+            return experimental.get(universalName).getKey() / experimental.get(universalName).getValue();
+        
+        return -1;
     }
 }
