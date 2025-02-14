@@ -47,8 +47,8 @@ public class ChatAbilityIdentifiers {
             }
             JsonParser parser = new JsonParser();
             JsonObject json = parser.parse(new InputStreamReader(jsonStream)).getAsJsonObject();
-            JsonObject incoming = json.get("incoming").getAsJsonObject();
-            JsonObject outgoing = json.get("outgoing").getAsJsonObject();
+            JsonObject incoming = json.get("self").getAsJsonObject();
+            JsonObject outgoing = json.get("external").getAsJsonObject();
             for (Map.Entry<String, JsonElement> status : incoming.entrySet()) {
                 operationsSelf.add(s -> s.contains(status.getValue().getAsJsonObject().get("contains").getAsString()) ? status.getKey() : null);
             }
