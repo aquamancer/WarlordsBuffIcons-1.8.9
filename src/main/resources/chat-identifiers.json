@@ -1,5 +1,11 @@
 {
-  "incoming": {
+  "external": {
+    "slowFrostbolt": {
+      "contains": "Frostbolt hit you"
+    },
+    "slowFreezingBreath": {
+      "contains": "Freezing Breath hit you"
+    },
     "wounded": {
       "contains": "Wounding Strike hit you"
     },
@@ -7,9 +13,24 @@
       "contains": "Crippling Strike hit you"
     }
   },
-  "outgoing": {
-    "universalName99": {
-      "contains": ""
+  "self": {
+    "interveneIncoming": {
+      "contains": "is shielding you with their Intervene"
+    },
+    "interveneOutgoing": {
+      "contains": "with your Intervene"
+    },
+    "lastStandIncoming": {
+      "contains": "Last Stand is now protecting you"
+    },
+    "lastStandOutgoing": {
+      "contains": "Your Last Stand is now protecting"
+    },
+    "undyingArmyIncoming": {
+      "contains": "Undying Army is now protecting you"
+    },
+    "undyingArmyOutgoing": {
+      "contains": "Your Undying Army is now protecting"
     }
   }
 }

@@ -85,7 +85,7 @@ dependencies {
     annotationProcessor("org.spongepowered:mixin:0.8.5-SNAPSHOT")
 
     // If you don't want to log in with your real minecraft account, remove this line
-    runtimeOnly("me.djtheredstoner:DevAuth-forge-legacy:1.2.1")
+    // runtimeOnly("me.djtheredstoner:DevAuth-forge-legacy:1.2.1")
     // JUnit dependencies
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.7.1")
     testImplementation("org.junit.jupiter:junit-jupiter-engine:5.7.1")

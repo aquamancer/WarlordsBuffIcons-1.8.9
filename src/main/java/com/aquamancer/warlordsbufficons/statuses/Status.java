@@ -62,7 +62,7 @@ public class Status {
     public long sync(Map.Entry<String, Integer> status) {
         return 0;
     }
-    public void setRemainingDuration(long duration) {
+    public void setRemainingDuration(int duration) {
         if (this.initialDuration < duration) {
             this.initialDuration = duration;
         }
