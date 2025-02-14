@@ -1,6 +1,7 @@
 package com.aquamancer.warlordsbufficons.mixin;
 
 import com.aquamancer.warlordsbufficons.StatusController;
+import com.aquamancer.warlordsbufficons.handlers.ChatAbilityIdentifiers;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.play.server.S02PacketChat;
 import net.minecraft.util.IChatComponent;
@@ -19,13 +20,19 @@ public class MixinNetHandlerPlayClient {
         System.out.println(packet.getChatComponent().getFormattedText());
         System.out.println(packet.getChatComponent().getUnformattedText());
         System.out.println(packet.getChatComponent().getUnformattedTextForChat());
-        if (packet.getType() == 0) {
 
+        IChatComponent component = packet.getChatComponent();
+        if (packet.getType() == 0) {
+            String unformatted = component.getUnformattedText();
+            if (unformatted.charAt(0) == '»') {
+                String statusMatch = ChatAbilityIdentifiers.getMatchSelf(unformatted);
+                if (statusMatch != null) StatusController.onChatStatus(unformatted);
+            } else if (unformatted.charAt(0) == '«') {
+                String statusMatch = ChatAbilityIdentifiers.getMatchExternal(unformatted);
+                if (statusMatch != null) StatusController.onChatStatus(unformatted);
+            }
         } else if (packet.getType() == 2) {
             StatusController.onActionBarPacketReceived(packet.getChatComponent());
         }
-    }
-    private static boolean isGameMessage(IChatComponent component) {
-        return false;
     }
 }

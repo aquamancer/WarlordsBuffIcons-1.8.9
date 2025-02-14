@@ -108,7 +108,7 @@ public class Statuses {
      * Adds custom statuses that are guaranteed to not be reflected by the action bar.
      * @param status the custom status to be added
      */
-    public void processCustomChatStatus(Status status) {
+    public void processNewCustomChatStatus(Status status) {
         if (status.isDebuff()) {
             this.debuffs.add(status);
             if (status.iconEnabled()) displayedDebuffs.add(status);
@@ -116,6 +116,11 @@ public class Statuses {
             this.buffs.add(status);
             if (status.iconEnabled()) displayedBuffs.add(status);
         }
+    }
+    public void processNewPrematureStatus(Status status) {
+        // add() already handles which mirrored list to add to when a matching new action bar status is found.
+        // therefore we don't need isDebuff here.
+        this.prematureStatuses.add(status);
     }
 
     /**

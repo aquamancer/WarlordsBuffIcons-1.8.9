@@ -20,7 +20,8 @@ public class StatusController {
         statuses = new Statuses();
     }
 
-    public static void onChatStatus(Status status) {
+    public static void onChatStatus(String universalName) {
+        statuses.processNewPrematureStatus(StatusFactory.fromUniversalName(universalName, ));
     }
     /*
         ACTION BAR METHODS -------------------------------------------------------
