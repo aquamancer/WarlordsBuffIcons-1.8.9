@@ -22,8 +22,8 @@ public class MixinNetHandlerPlayClient {
         System.out.println(packet.getChatComponent().getUnformattedTextForChat());
 
         IChatComponent component = packet.getChatComponent();
-        if (packet.getType() == 0) {
-            String unformatted = component.getUnformattedText();
+        String unformatted = component.getUnformattedText();
+        if (packet.getType() == 0 && !unformatted.isEmpty()){
             if (unformatted.charAt(0) == '»') {
                 String statusMatch = ChatAbilityIdentifiers.getMatchSelf(unformatted);
                 if (statusMatch != null) StatusController.onChatStatus(unformatted);
