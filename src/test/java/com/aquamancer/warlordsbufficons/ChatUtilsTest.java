@@ -98,4 +98,28 @@ public class ChatUtilsTest {
         exp.add(entry("3", '6'));
         assertEquals(exp, t);
     }
+    @Test
+    public void testMalformed() {
+        List<Map.Entry<String, List<Character>>> t = new ArrayList<>();
+        List<Map.Entry<String, List<Character>>> exp = new ArrayList<>();
+        parseFormattedChatMessage(S + S, t);
+    }
+    @Test
+    public void testMalformed1() {
+        List<Map.Entry<String, List<Character>>> t = new ArrayList<>();
+        List<Map.Entry<String, List<Character>>> exp = new ArrayList<>();
+        parseFormattedChatMessage(S, t);
+    }
+    @Test
+    public void testMalformed2() {
+        List<Map.Entry<String, List<Character>>> t = new ArrayList<>();
+        List<Map.Entry<String, List<Character>>> exp = new ArrayList<>();
+        parseFormattedChatMessage("d" + S, t);
+    }
+    @Test
+    public void testMalformed3() {
+        List<Map.Entry<String, List<Character>>> t = new ArrayList<>();
+        List<Map.Entry<String, List<Character>>> exp = new ArrayList<>();
+        parseFormattedChatMessage("d" + S + S + "c" + S, t);
+    }
 }

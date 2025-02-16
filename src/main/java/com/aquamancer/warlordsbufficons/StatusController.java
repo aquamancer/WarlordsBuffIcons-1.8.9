@@ -54,8 +54,8 @@ public class StatusController {
                 .filter(s -> s.contains("§7:§6"))
                 .forEach(s -> {
                     // §cWND§7:§63 
-
-                })
+                    
+                });
         return null;
     }
     
