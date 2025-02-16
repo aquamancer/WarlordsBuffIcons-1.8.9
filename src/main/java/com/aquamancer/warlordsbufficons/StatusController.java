@@ -50,12 +50,12 @@ public class StatusController {
         List<Status> buffs = new ArrayList<>();
         List<Status> debuffs = new ArrayList<>();
         List<String> split = Arrays.asList(actionBar.getFormattedText().split(" "));
-//        split.stream()
-//                .filter(s -> s.contains("§7:§6"))
-//                .forEach(s -> {
-//                    // §cWND§7:§63 
-//                    
-//                })
+        split.stream()
+                .filter(s -> s.contains("§7:§6"))
+                .forEach(s -> {
+                    // §cWND§7:§63 
+
+                })
         return null;
     }
     

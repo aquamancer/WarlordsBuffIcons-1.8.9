@@ -16,8 +16,8 @@ public class ChatUtils {
         // base case: message is empty string
         if (message.isEmpty() || message.equals("§")) return; // or message.charAt(message.length() - 1) == '§'
         if (message.charAt(0) != '§') { // if the message begins without any formatting codes
-            int indexOfSymbol = message.indexOf('§');
-            int startOfNextSubstring = indexOfSymbol != -1 ? indexOfSymbol : message.length();
+            int indexOfNextSymbol = message.indexOf('§');
+            int startOfNextSubstring = indexOfNextSymbol != -1 ? indexOfNextSymbol : message.length();
             list.add(new SimpleImmutableEntry<>(message.substring(0, startOfNextSubstring), new ArrayList<>()));
             parseFormattedChatMessage(message.substring(startOfNextSubstring), list);
         } else {
