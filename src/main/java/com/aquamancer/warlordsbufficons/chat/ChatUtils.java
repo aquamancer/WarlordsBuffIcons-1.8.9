@@ -7,10 +7,11 @@ import java.util.Map;
 
 public class ChatUtils {
     /**
-     * Parses a formatted chat message, where format characters are preceded by § into a List of
-     * (message, list of format characters)
-     * @param message the chat message to be parsed
-     * @param list List of (message, list of format characters for message)
+     * Parses a formatted String, where format characters are preceded by §, and adds
+     * (substring, list of format chars for substring) to list
+     * @updates list
+     * @param message the string to be parsed
+     * @param list List of (substring, list of format characters for substring)
      */
     public static void parseFormattedChatMessage(String message, List<Map.Entry<String, List<Character>>> list) {
         // base case: message is empty string

@@ -1,13 +1,22 @@
 package com.aquamancer.warlordsbufficons;
 
+import com.aquamancer.warlordsbufficons.chat.ChatUtils;
 import com.aquamancer.warlordsbufficons.statuses.*;
 import net.minecraft.util.IChatComponent;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.AbstractMap.SimpleEntry;
 
 public class StatusController {
     private static final Pattern WARLORDS_ACTIONBAR_IDENTIFIER = Pattern.compile(".*\\d+/\\d+.*");
+    private static final Logger LOGGER = LogManager.getLogger(StatusController.class);
+    
+    private static final char DISPLAYED_BUFF_COLOR = 'a';
+    private static final char DISPLAYED_DEBUFF_COLOR = 'c';
 
     /**
      * Represents previous raw actionbar data
@@ -47,16 +56,33 @@ public class StatusController {
     private static ActionBarStatuses parseStatusesFromActionBar(IChatComponent actionBar) {
         // [21:44:10] [Netty Client IO #6/INFO]: [net.minecraft.client.network.NetHandlerPlayClient:handler$zhl000$onChatPacketReceived:6496]:          §r          §6§lHP: §2§l4216§6§l/5571§r     §c§lRED Team§r    §aORBS§7:§610 §cWND§7:§63 §r§r
         // :handler$zhl000$onChatPacketReceived:6496]:               §r               §6§lHP: §e§l2370§6§l/6152§r     §9§lBLU Team§r    §aLINF§7:§61 §cCRIP§7:§63 §cWND§7:§63 §r§r
-        List<Status> buffs = new ArrayList<>();
-        List<Status> debuffs = new ArrayList<>();
-        List<String> split = Arrays.asList(actionBar.getFormattedText().split(" "));
-        split.stream()
+        List<Map.Entry<String, Integer>> buffs = new ArrayList<>();
+        List<Map.Entry<String, Integer>> debuffs = new ArrayList<>();
+        List<String> formattedStatuses = Arrays.stream(actionBar.getFormattedText().split(" "))
                 .filter(s -> s.contains("§7:§6"))
-                .forEach(s -> {
-                    // §cWND§7:§63 
-                    
-                });
-        return null;
+                .collect(Collectors.toList());
+        for (String formattedStatus : formattedStatuses) {
+            List<Map.Entry<String, List<Character>>> components = new ArrayList<>();
+            ChatUtils.parseFormattedChatMessage(formattedStatus, components);
+            if (components.size() != 3) {
+                LOGGER.error("parsing action bar substring containing §7:§6 resulted in size of {}. Expected: 3.\n{}", components.size(), actionBar.getFormattedText());
+                return previousActionBar;
+            }
+            
+            try {
+                String statusName = components.get(0).getKey(); // 0 = name, 1 = :, 2 = duration
+                Integer duration = Integer.parseInt(components.get(2).getKey());
+                if (components.get(0).getValue().contains(DISPLAYED_DEBUFF_COLOR)) {
+                    debuffs.add(new SimpleEntry<>(statusName, duration));
+                } else {
+                    buffs.add(new SimpleEntry<>(statusName, duration));
+                }
+            } catch (NumberFormatException ex) {
+                LOGGER.error("couldn't parse {} to Integer while parsing action bar status substring", components.get(2).getKey());
+                return previousActionBar;
+            }
+        }
+        return new ActionBarStatuses(buffs, debuffs);
     }
     
     /**
