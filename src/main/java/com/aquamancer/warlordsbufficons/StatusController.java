@@ -12,7 +12,6 @@ import java.util.stream.Collectors;
 import java.util.AbstractMap.SimpleEntry;
 
 public class StatusController {
-    private static final Pattern WARLORDS_ACTIONBAR_IDENTIFIER = Pattern.compile(".*\\d+/\\d+.*");
     private static final Logger LOGGER = LogManager.getLogger(StatusController.class);
     
     private static final char DISPLAYED_BUFF_COLOR = 'a';
@@ -21,13 +20,8 @@ public class StatusController {
     /**
      * Represents previous raw actionbar data
      */
-    private static ActionBarStatuses previousActionBar;
-    private static Statuses statuses;
-    
-    public static void init() {
-        previousActionBar = new ActionBarStatuses();
-        statuses = new Statuses();
-    }
+    private static ActionBarStatuses previousActionBar = new ActionBarStatuses();
+    private static Statuses statuses = new Statuses();
 
     public static void onChatStatus(String universalName) {
         int duration = StatusFactory.calculateInitialDuration(universalName, statuses.getExperimentalInitialDurations());
@@ -45,7 +39,7 @@ public class StatusController {
     public static void onActionBarPacketReceived(IChatComponent bar) {
         String message = bar.getUnformattedText();
         // verify the action bar message is warlords in game action bar, not something else, like +5 coins
-        if (!WARLORDS_ACTIONBAR_IDENTIFIER.matcher(message).find()) return;
+        // todo add filter
         ActionBarStatuses currentActionBar = parseStatusesFromActionBar(bar);
         if (currentActionBar.equals(previousActionBar)) return;
         onActionBarStatusesChanged(currentActionBar);
@@ -78,22 +72,11 @@ public class StatusController {
                     buffs.add(new SimpleEntry<>(statusName, duration));
                 }
             } catch (NumberFormatException ex) {
-                LOGGER.error("couldn't parse {} to Integer while parsing action bar status substring", components.get(2).getKey());
+                LOGGER.error("couldn't parse {} to Integer while parsing action bar status substring\n{}", components.get(2).getKey(), actionBar.getFormattedText());
                 return previousActionBar;
             }
         }
         return new ActionBarStatuses(buffs, debuffs);
-    }
-    
-    /**
-     * Helper method to parse a single action bar status from string.
-     * @param s
-     * @return
-     */
-    private static Map.Entry<String, Map.Entry<Integer, Boolean>> parseActionBarStatus(String s) {
-        boolean isDebuff;
-        
-        return null;
     }
     
     /**
