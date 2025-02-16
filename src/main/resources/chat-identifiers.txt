@@ -1,4 +1,6 @@
 last stand does not display any chat message if you hit no one, if you do, it says:
 Your Last Stand is now protecting <player>!
 for consistency i guess we could do a premature status that stacks. don't want extra logic to only register 1
-same with undying army:
+
+undying army self always displays:
+Your Undying Army is protecting you and 0 nearby allies.

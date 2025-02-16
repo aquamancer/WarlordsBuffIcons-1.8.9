@@ -45,7 +45,28 @@ public class StatusController {
     }
 
     private static ActionBarStatuses parseStatusesFromActionBar(IChatComponent actionBar) {
-        // todo awaiting ingame testing for the format of the action bar string
+        // [21:44:10] [Netty Client IO #6/INFO]: [net.minecraft.client.network.NetHandlerPlayClient:handler$zhl000$onChatPacketReceived:6496]:          §r          §6§lHP: §2§l4216§6§l/5571§r     §c§lRED Team§r    §aORBS§7:§610 §cWND§7:§63 §r§r
+        // :handler$zhl000$onChatPacketReceived:6496]:               §r               §6§lHP: §e§l2370§6§l/6152§r     §9§lBLU Team§r    §aLINF§7:§61 §cCRIP§7:§63 §cWND§7:§63 §r§r
+        List<Status> buffs = new ArrayList<>();
+        List<Status> debuffs = new ArrayList<>();
+        List<String> split = Arrays.asList(actionBar.getFormattedText().split(" "));
+//        split.stream()
+//                .filter(s -> s.contains("§7:§6"))
+//                .forEach(s -> {
+//                    // §cWND§7:§63 
+//                    
+//                })
+        return null;
+    }
+    
+    /**
+     * Helper method to parse a single action bar status from string.
+     * @param s
+     * @return
+     */
+    private static Map.Entry<String, Map.Entry<Integer, Boolean>> parseActionBarStatus(String s) {
+        boolean isDebuff;
+        
         return null;
     }
     

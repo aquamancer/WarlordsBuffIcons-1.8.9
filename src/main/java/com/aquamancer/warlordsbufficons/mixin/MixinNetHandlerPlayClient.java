@@ -1,10 +1,7 @@
 package com.aquamancer.warlordsbufficons.mixin;
 
-import com.aquamancer.warlordsbufficons.StatusController;
-import com.aquamancer.warlordsbufficons.handlers.ChatAbilityIdentifiers;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.play.server.S02PacketChat;
-import net.minecraft.util.IChatComponent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.mixin.Mixin;
@@ -19,8 +16,7 @@ public class MixinNetHandlerPlayClient {
     public void onChatPacketReceived(S02PacketChat packet, CallbackInfo ci) {
         System.out.println(packet.getChatComponent().getFormattedText());
         System.out.println(packet.getChatComponent().getUnformattedText());
-        System.out.println(packet.getChatComponent().getUnformattedTextForChat());
-
+/*
         IChatComponent component = packet.getChatComponent();
         String unformatted = component.getUnformattedText();
         if (packet.getType() == 0 && !unformatted.isEmpty()){
@@ -34,5 +30,7 @@ public class MixinNetHandlerPlayClient {
         } else if (packet.getType() == 2) {
             StatusController.onActionBarPacketReceived(packet.getChatComponent());
         }
+        
+ */
     }
 }

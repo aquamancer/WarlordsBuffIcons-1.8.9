@@ -30,7 +30,7 @@
       "contains": "Undying Army is now protecting you"
     },
     "undyingArmyOutgoing": {
-      "contains": "Your Undying Army is now protecting"
+      "contains": "Your Undying Army is protecting you and"
     }
   }
 }

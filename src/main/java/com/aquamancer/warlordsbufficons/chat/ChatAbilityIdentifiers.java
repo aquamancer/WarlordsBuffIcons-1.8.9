@@ -1,4 +1,4 @@
-package com.aquamancer.warlordsbufficons.handlers;
+package com.aquamancer.warlordsbufficons.chat;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -76,10 +76,5 @@ public class ChatAbilityIdentifiers {
         }
         return null;
     }
-     /*
-        received/incoming effects (chat messages with the bit left shift character)
-      */
-    // todo pyro arcane shield stun?
-    // todo meleeing an ice barrier
 }
    
