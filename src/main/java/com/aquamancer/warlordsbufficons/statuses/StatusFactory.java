@@ -30,17 +30,27 @@ public class StatusFactory {
             toUniversalName.put(statusFields.get("actionBarName").getAsString(), status.getKey());
         }
     }
+    public static Status fromUniversalName(String universalName, int initialDuration, int initialDisplayedDuration) {
+        return new Status(universalName, initialDuration, initialDisplayedDuration, fromUniversalName.get(universalName));
+    }
+    public static Status fromActionBarName(String actionBarName, int initialDuration, int initialDisplayedDuration) {
+        return new Status(toUniversalName(actionBarName), initialDuration, initialDisplayedDuration, fromUniversalName.get(toUniversalName(actionBarName)));
+    }
+
+    /**
+     * Should only be called for chat statuses.
+     * @param universalName
+     * @param initialDuration
+     * @return
+     */
     public static Status fromUniversalName(String universalName, int initialDuration) {
         return new Status(universalName, initialDuration, fromUniversalName.get(universalName));
-    }
-    public static Status fromActionBarName(String actionBarName, int initialDuration) {
-        return new Status(toUniversalName(actionBarName), initialDuration, fromUniversalName.get(toUniversalName(actionBarName)));
     }
     public static String toUniversalName(String actionBarName) {
         return toUniversalName.get(actionBarName);
     }
 
-    public static int calculateInitialDuration(Map.Entry<String, Integer> actionBarStatus, Map<String, Map.Entry<Integer, Integer>> experimental) {
+    public static int calculateInitialDuration(Map.Entry<String, Integer> actionBarStatus, Map<String, DurationPair> experimental) {
         String universalName = toUniversalName(actionBarStatus.getKey());
         Integer displayedRemainingDuration = actionBarStatus.getValue();
 
@@ -49,7 +59,7 @@ public class StatusFactory {
         if (withinIntervalInclusive(displayedRemainingDuration, manualInitialDuration)) return manualInitialDuration;
         // then try current session experimental data
         if (experimental.containsKey(universalName)) {
-            int avg = experimental.get(universalName).getKey() / experimental.get(universalName).getValue();
+            int avg = experimental.get(universalName).getAverage();
             if (withinIntervalInclusive(displayedRemainingDuration, avg)) return avg;
         }
         // then try previous session experimental data (from json)
@@ -84,13 +94,13 @@ public class StatusFactory {
      * @param experimental
      * @return
      */
-    public static int calculateInitialDuration(String universalName, Map<String, Map.Entry<Integer, Integer>> experimental) {
+    public static int calculateInitialDuration(String universalName, Map<String, DurationPair> experimental) {
         int manualInitialDuration = fromUniversalName.get(universalName).get(MANUAL_INITIAL_DURATION).getAsInt();
         if (manualInitialDuration > 0)
             return manualInitialDuration;
         
         if (experimental.containsKey(universalName))
-            return experimental.get(universalName).getKey() / experimental.get(universalName).getValue();
+            return experimental.get(universalName).getAverage();
         
         return -1;
     }

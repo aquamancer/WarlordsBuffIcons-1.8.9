@@ -99,21 +99,23 @@ public class StatusController {
         List<Map.Entry<String, Integer>> addedDebuffs = ActionBarStatuses.getAdditions(previousActionBar.getDebuffs(), recentActionBar.getDebuffs(), deletedDebuffs);
 
         for (Integer deletedBuff : deletedBuffs) {
+            // todo update experimental initial durations for statuses that are < 1 second
             statuses.remove(deletedBuff, false, true); // alternatively can remove softly
         }
         // sync the durations of existing statuses up to statuses that have just been added
         // master and mirrored statuses have not yet been updated with the new buffs, so its size will be <= recentActionBar
         for (int i = 0; i < statuses.getMirroredBuffs().size(); i++) {
-            statuses.getMirroredBuffs().get(i).sync(recentActionBar.getBuffs().get(i));
+            statuses.getMirroredBuffs().get(i).sync(recentActionBar.getBuffs().get(i).getValue(), statuses.getExperimentalInitialDurations());
         }
         // add the new statuses
         statuses.processNewActionBarStatus(addedBuffs, false);
         
         for (Integer deletedDebuff : deletedDebuffs) {
+            // todo update experimental initial durations for statuses that are < 1 second
             statuses.remove(deletedDebuff, true, true);
         }
         for (int i = 0; i < statuses.getMirroredDebuffs().size(); i++) {
-            statuses.getMirroredBuffs().get(i).sync(recentActionBar.getDebuffs().get(i));
+            statuses.getMirroredBuffs().get(i).sync(recentActionBar.getDebuffs().get(i).getValue(), statuses.getExperimentalInitialDurations());
         }
         statuses.processNewActionBarStatus(addedDebuffs, true);
         statuses.clearPrematureStatuses();

@@ -3,9 +3,12 @@ package com.aquamancer.warlordsbufficons.statuses;
 import com.google.gson.JsonObject;
 
 import java.awt.*;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.Map;
 
 public class Status {
+    // todo make configurable
+    private static int SYNC_TOLERANCE_MILLIS = 250;
     private String universalName;
     private String actionBarName;
     private boolean isDebuff, iconEnabled, isCustom;
@@ -13,6 +16,12 @@ public class Status {
     /*
      * Custom fields for runtime
      */
+    /**
+     * Tracks the last displayed duration of this status on the action bar, to track when the duration has changed.
+     * This field will NOT be initialized when chat event creates a premature status or custom status. It will
+     * be initialized for premature statuses when there has been a match with an action bar status addition.
+     */
+    private int previousDisplayedDuration;
     // millis
     private int initialDuration;
     private int remainingDuration;
@@ -32,8 +41,7 @@ public class Status {
      */
     private boolean initialDurationExperimentalLogged; // whether the status duration has ticked down once and logged
     private int initialDurationExperimental; // duration after tick down + timed time it took to tick down
-
-    private long timeAdded;
+    private final long timeAddedMillis;
 
     /*
      * Required fields for icon to function:
@@ -42,39 +50,57 @@ public class Status {
      *      - initial duration logging
      * stacking info
      */
-     
     public Status(String universalName, int initialDuration, JsonObject jsonData) {
         this.universalName = universalName;
         this.initialDuration = initialDuration;
         this.remainingDuration = initialDuration;
-        this.timeAdded = System.currentTimeMillis();
+        this.timeAddedMillis = System.currentTimeMillis();
+        this.initialDurationExperimentalLogged = false;
+    }
+    public Status(String universalName, int initialDuration, int initialDisplayedDuration, JsonObject jsonData) {
+        this.universalName = universalName;
+        this.previousDisplayedDuration = initialDisplayedDuration;
+        this.initialDuration = initialDuration;
+        this.remainingDuration = initialDuration;
+        this.timeAddedMillis = System.currentTimeMillis();
         this.initialDurationExperimentalLogged = false;
         // todo parse json, create fields, fill fields
     }
 
     /**
-     * Syncs the remaining duration. 
-     * @param remainingDuration
+     * Syncs the remaining duration with the displayed duration.
+     * @param displayedDuration the current displayed duration
      */
-    public long sync(int remainingDuration) {
-        return 0;
-    }
-    public long sync(Map.Entry<String, Integer> status) {
-        return 0;
-    }
-    public void setRemainingDuration(int duration) {
-        if (this.initialDuration < duration) {
-            this.initialDuration = duration;
+    public void sync(int displayedDuration, Map<String, DurationPair> experimentalInitialDurations) {
+        if (displayedDuration == this.previousDisplayedDuration || this.isCustom) return;
+        // the displayed duration for this status has just changed
+        // handle initial duration experimental
+        if (!this.initialDurationExperimentalLogged) {
+            long currentTimeMillis = System.currentTimeMillis();
+            int precision = (int) (currentTimeMillis - this.timeAddedMillis);
+            int experimentalInitialDuration = displayedDuration * 1000 + precision;
+            
+            DurationPair durationPair = experimentalInitialDurations.get(this.universalName);
+            if (durationPair == null) {
+                experimentalInitialDurations.put(universalName, new DurationPair(experimentalInitialDuration));
+            } else {
+                durationPair.add(experimentalInitialDuration);
+            }
+            this.initialDurationExperimentalLogged = true;
         }
-        this.remainingDuration = duration;
-    }
-
-    public String getActionBarName() {
-        return actionBarName;
+        if (Math.abs(displayedDuration * 1000 - this.remainingDuration) > SYNC_TOLERANCE_MILLIS) {
+            this.remainingDuration = displayedDuration * 1000;
+        }
     }
 
     public long getRemainingDuration() {
         return remainingDuration;
+    }
+    public int getPreviousDisplayedDuration() {
+        return this.previousDisplayedDuration;
+    }
+    public void setPreviousDisplayedDuration(int seconds) {
+        this.previousDisplayedDuration = seconds;
     }
     public String getUniversalName() {
         return this.universalName;

@@ -1,36 +1,36 @@
 {
   "external": {
     "slowFrostbolt": {
-      "contains": "Frostbolt hit you",
+      "contains": "Frostbolt hit you"
     },
     "slowFreezingBreath": {
-      "contains": "Freezing Breath hit you",
+      "contains": "Freezing Breath hit you"
     },
     "wounded": {
-      "contains": "Wounding Strike hit you",
+      "contains": "Wounding Strike hit you"
     },
     "crippled": {
-      "contains": "Crippling Strike hit you",
+      "contains": "Crippling Strike hit you"
     }
   },
   "self": {
     "interveneIncoming": {
-      "contains": "is shielding you with their Intervene",
+      "contains": "is shielding you with their Intervene"
     },
     "interveneOutgoing": {
-      "contains": "with your Intervene",
+      "contains": "with your Intervene"
     },
     "lastStandIncoming": {
-      "contains": "Last Stand is now protecting you",
+      "contains": "Last Stand is now protecting you"
     },
     "lastStandOutgoing": {
-      "contains": "Your Last Stand is now protecting",
+      "contains": "Your Last Stand is now protecting"
     },
     "undyingArmyIncoming": {
-      "contains": "Undying Army is now protecting you",
+      "contains": "Undying Army is now protecting you"
     },
     "undyingArmyOutgoing": {
-      "contains": "Your Undying Army is protecting you and",
+      "contains": "Your Undying Army is protecting you and"
     }
   }
 }

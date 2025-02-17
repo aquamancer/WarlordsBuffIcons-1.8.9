@@ -42,7 +42,7 @@ public class Statuses {
      * Map&lt;universalName, &lt;rolling sum, n&gt;&gt; that stores the time it takes for each
      * status to tick down once. This is used to calculate the actual initial durations of statuses.
      */
-    private Map<String, Map.Entry<Integer, Integer>> experimentalInitialDurations;
+    private Map<String, DurationPair> experimentalInitialDurations;
 
     private static final int REMOVE_THRESHOLD_MIN = 150; // todo make configurable
     
@@ -71,6 +71,7 @@ public class Statuses {
         for (int i = 0; i < this.prematureStatuses.size(); i++) {
             // if the name of status to be added = name of premature status
             if (status.getUniversalName().equals(this.prematureStatuses.get(i).getUniversalName())) {
+                this.prematureStatuses.get(i).setPreviousDisplayedDuration(status.getPreviousDisplayedDuration());
                 this.addToAll(this.prematureStatuses.get(i), isActionBarDebuff);
                 this.prematureStatuses.remove(i);
                 return;
@@ -98,7 +99,8 @@ public class Statuses {
         for (Map.Entry<String, Integer> actionBarStatus : actionBarStatuses) {
             Status status = StatusFactory.fromActionBarName(
                     actionBarStatus.getKey(),
-                    StatusFactory.calculateInitialDuration(actionBarStatus, experimentalInitialDurations)
+                    StatusFactory.calculateInitialDuration(actionBarStatus, experimentalInitialDurations),
+                    actionBarStatus.getValue()
                     );
             this.add(status, isActionBarDebuff, false);
         }
@@ -163,7 +165,7 @@ public class Statuses {
     public List<Status> getMirroredDebuffs() {
         return mirroredDebuffs;
     }
-    public Map<String, Map.Entry<Integer, Integer>> getExperimentalInitialDurations() {
+    public Map<String, DurationPair> getExperimentalInitialDurations() {
         return this.experimentalInitialDurations;
     }
 }
