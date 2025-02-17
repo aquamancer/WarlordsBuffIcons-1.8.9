@@ -120,6 +120,7 @@ public class Statuses {
     public void processNewPrematureStatus(Status status) {
         // add() already handles which mirrored list to add to when a matching new action bar status is found.
         // therefore we don't need isDebuff here.
+        
         this.prematureStatuses.add(status);
     }
 

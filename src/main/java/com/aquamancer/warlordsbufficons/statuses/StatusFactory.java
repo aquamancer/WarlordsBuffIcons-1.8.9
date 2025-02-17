@@ -12,7 +12,7 @@ public class StatusFactory {
      */
     // todo make sure program doesn't break if config is changed while icons are displayed
     // todo maybe null checks for retrieving values from json
-    public static Map<String, JsonObject> fromUniversalName;
+    private static Map<String, JsonObject> fromUniversalName;
     
     private static Map<String, String> toUniversalName;
     private static Map<String, String> stackingEnabled;
@@ -93,5 +93,8 @@ public class StatusFactory {
             return experimental.get(universalName).getKey() / experimental.get(universalName).getValue();
         
         return -1;
+    }
+    public static boolean isCustomStatus(String universalName) {
+        return fromUniversalName.get(universalName).get("custom").getAsBoolean();
     }
 }

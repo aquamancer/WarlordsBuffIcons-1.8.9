@@ -25,8 +25,14 @@ public class StatusController {
 
     public static void onChatStatus(String universalName) {
         int duration = StatusFactory.calculateInitialDuration(universalName, statuses.getExperimentalInitialDurations());
-        if (duration > 0)
-            statuses.processNewPrematureStatus(StatusFactory.fromUniversalName(universalName, duration));
+        if (duration > 0) {
+            Status newStatus = StatusFactory.fromUniversalName(universalName, duration);
+            if (newStatus.isCustom()) {
+                statuses.processNewCustomChatStatus(newStatus);
+            } else {
+                statuses.processNewPrematureStatus(newStatus);
+            }
+        }
     }
     /*
         ACTION BAR METHODS -------------------------------------------------------

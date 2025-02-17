@@ -8,7 +8,7 @@ import java.util.Map;
 public class Status {
     private String universalName;
     private String actionBarName;
-    private boolean isDebuff, iconEnabled;
+    private boolean isDebuff, iconEnabled, isCustom;
     private Color border;
     /*
      * Custom fields for runtime
@@ -84,6 +84,9 @@ public class Status {
     }
     public boolean iconEnabled() {
         return this.iconEnabled;
+    }
+    public boolean isCustom() {
+        return this.isCustom;
     }
 }
 

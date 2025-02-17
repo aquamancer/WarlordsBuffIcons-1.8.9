@@ -2,8 +2,8 @@
   "timeWarp": {
     "actionBarName": "WARP",
     "enabled": true,
-    "isHypixelDebuff": false,
     "type": "buff",
+    "custom": false,
     "border": "green",
     "icon": "foo.png",
     "manualInitialDuration": -1,
