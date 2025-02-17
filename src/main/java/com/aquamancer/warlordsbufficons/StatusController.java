@@ -62,7 +62,7 @@ public class StatusController {
                 .filter(s -> s.contains("§7:§6"))
                 .collect(Collectors.toList());
         for (String formattedStatus : formattedStatuses) {
-            List<Map.Entry<String, List<Character>>> components = new ArrayList<>(); // 0 = name, 1 = :, 2 = duration
+            List<Map.Entry<String, Set<Character>>> components = new ArrayList<>(); // 0 = name, 1 = :, 2 = duration
             ChatUtils.parseFormattedChatMessage(formattedStatus, components);
             if (components.size() != 3) {
                 LOGGER.error("parsing action bar substring containing §7:§6 resulted in size of {}. Expected: 3.\n{}", components.size(), actionBar.getFormattedText());
