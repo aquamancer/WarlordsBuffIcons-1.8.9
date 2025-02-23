@@ -51,7 +51,7 @@ public class StatusController {
         
         previousActionBar = currentActionBar;
     }
-
+    // todo fix parsing for multi-word status names
     private static ActionBarStatuses parseStatusesFromActionBar(IChatComponent actionBar) {
         // [21:44:10] [Netty Client IO #6/INFO]: [net.minecraft.client.network.NetHandlerPlayClient:handler$zhl000$onChatPacketReceived:6496]:          §r          §6§lHP: §2§l4216§6§l/5571§r     §c§lRED Team§r    §aORBS§7:§610 §cWND§7:§63 §r§r
         // :handler$zhl000$onChatPacketReceived:6496]:               §r               §6§lHP: §e§l2370§6§l/6152§r     §9§lBLU Team§r    §aLINF§7:§61 §cCRIP§7:§63 §cWND§7:§63 §r§r
