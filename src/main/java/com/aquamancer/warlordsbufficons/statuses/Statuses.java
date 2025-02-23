@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ScheduledFuture;
 
 /**
  * All isDebuff parameters refer to "is debuff according to the action bar." This is needed to determine
@@ -42,7 +41,7 @@ public class Statuses {
      * Map&lt;universalName, &lt;rolling sum, n&gt;&gt; that stores the time it takes for each
      * status to tick down once. This is used to calculate the actual initial durations of statuses.
      */
-    private Map<String, DurationPair> experimentalInitialDurations;
+    private Map<String, MedianTracker> experimentalDurations;
 
     private static final int REMOVE_THRESHOLD_MIN = 150; // todo make configurable
     
@@ -51,7 +50,7 @@ public class Statuses {
         this.debuffs = new ArrayList<>();
         this.mirroredBuffs = new ArrayList<>();
         this.mirroredDebuffs = new ArrayList<>();
-        this.experimentalInitialDurations = new HashMap<>();
+        this.experimentalDurations = new HashMap<>();
         this.prematureStatuses = new ArrayList<>();
     }
 
@@ -71,7 +70,7 @@ public class Statuses {
         for (int i = 0; i < this.prematureStatuses.size(); i++) {
             // if the name of status to be added = name of premature status
             if (status.getUniversalName().equals(this.prematureStatuses.get(i).getUniversalName())) {
-                this.prematureStatuses.get(i).setPreviousDisplayedDuration(status.getPreviousDisplayedDuration());
+                this.prematureStatuses.get(i).setDisplayedDuration(status.getDisplayedDuration());
                 this.addToAll(this.prematureStatuses.get(i), isActionBarDebuff);
                 this.prematureStatuses.remove(i);
                 return;
@@ -97,9 +96,9 @@ public class Statuses {
 
     public void processNewActionBarStatus(List<Map.Entry<String, Integer>> actionBarStatuses, boolean isActionBarDebuff) {
         for (Map.Entry<String, Integer> actionBarStatus : actionBarStatuses) {
-            Status status = StatusFactory.fromActionBarName(
+            Status status = StatusFactory.createStatusFromActionBarName(
                     actionBarStatus.getKey(),
-                    StatusFactory.calculateInitialDuration(actionBarStatus, experimentalInitialDurations),
+                    StatusFactory.calculateInitialDuration(actionBarStatus, experimentalDurations),
                     actionBarStatus.getValue()
                     );
             this.add(status, isActionBarDebuff, false);
@@ -136,10 +135,12 @@ public class Statuses {
     public void remove(int indexOnActionBar, boolean isDebuff, boolean cancelIcon) {
         Status removed;
         if (isDebuff) {
-            removed = this.debuffs.remove(indexOnActionBar);
+            removed = this.mirroredDebuffs.remove(indexOnActionBar);
+            this.debuffs.remove(removed);
             if (cancelIcon || removed.getRemainingDuration() > REMOVE_THRESHOLD_MIN) this.displayedDebuffs.remove(removed);
         } else {
-            removed = this.buffs.remove(indexOnActionBar);
+            removed = this.mirroredBuffs.remove(indexOnActionBar);
+            this.buffs.remove(removed);
             if (cancelIcon || removed.getRemainingDuration() > REMOVE_THRESHOLD_MIN) this.displayedBuffs.remove(removed);
         }
     }
@@ -165,7 +166,7 @@ public class Statuses {
     public List<Status> getMirroredDebuffs() {
         return mirroredDebuffs;
     }
-    public Map<String, DurationPair> getExperimentalInitialDurations() {
-        return this.experimentalInitialDurations;
+    public Map<String, MedianTracker> getExperimentalDurations() {
+        return this.experimentalDurations;
     }
 }

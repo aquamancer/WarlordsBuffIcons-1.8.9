@@ -7,7 +7,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.*;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.AbstractMap.SimpleEntry;
 
@@ -24,9 +23,9 @@ public class StatusController {
     private static Statuses statuses = new Statuses();
 
     public static void onChatStatus(String universalName) {
-        int duration = StatusFactory.calculateInitialDuration(universalName, statuses.getExperimentalInitialDurations());
+        int duration = StatusFactory.calculateInitialDuration(universalName, statuses.getExperimentalDurations());
         if (duration > 0) {
-            Status newStatus = StatusFactory.fromUniversalName(universalName, duration);
+            Status newStatus = StatusFactory.createCustomStatusFromUniversalName(universalName, duration);
             if (newStatus.isCustom()) {
                 statuses.processNewCustomChatStatus(newStatus);
             } else {
@@ -105,7 +104,7 @@ public class StatusController {
         // sync the durations of existing statuses up to statuses that have just been added
         // master and mirrored statuses have not yet been updated with the new buffs, so its size will be <= recentActionBar
         for (int i = 0; i < statuses.getMirroredBuffs().size(); i++) {
-            statuses.getMirroredBuffs().get(i).sync(recentActionBar.getBuffs().get(i).getValue(), statuses.getExperimentalInitialDurations());
+            statuses.getMirroredBuffs().get(i).sync(recentActionBar.getBuffs().get(i).getValue(), statuses.getExperimentalDurations());
         }
         // add the new statuses
         statuses.processNewActionBarStatus(addedBuffs, false);
@@ -115,7 +114,7 @@ public class StatusController {
             statuses.remove(deletedDebuff, true, true);
         }
         for (int i = 0; i < statuses.getMirroredDebuffs().size(); i++) {
-            statuses.getMirroredBuffs().get(i).sync(recentActionBar.getDebuffs().get(i).getValue(), statuses.getExperimentalInitialDurations());
+            statuses.getMirroredBuffs().get(i).sync(recentActionBar.getDebuffs().get(i).getValue(), statuses.getExperimentalDurations());
         }
         statuses.processNewActionBarStatus(addedDebuffs, true);
         statuses.clearPrematureStatuses();

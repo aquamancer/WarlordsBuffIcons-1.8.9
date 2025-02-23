@@ -30,43 +30,80 @@ public class StatusFactory {
             toUniversalName.put(statusFields.get("actionBarName").getAsString(), status.getKey());
         }
     }
-    public static Status fromUniversalName(String universalName, int initialDuration, int initialDisplayedDuration) {
+    public static Status createStatusFromUniversalName(String universalName, int initialDuration, int initialDisplayedDuration) {
         return new Status(universalName, initialDuration, initialDisplayedDuration, fromUniversalName.get(universalName));
     }
-    public static Status fromActionBarName(String actionBarName, int initialDuration, int initialDisplayedDuration) {
+    public static Status createStatusFromActionBarName(String actionBarName, int initialDuration, int initialDisplayedDuration) {
         return new Status(toUniversalName(actionBarName), initialDuration, initialDisplayedDuration, fromUniversalName.get(toUniversalName(actionBarName)));
     }
 
-    /**
-     * Should only be called for chat statuses.
-     * @param universalName
-     * @param initialDuration
-     * @return
-     */
-    public static Status fromUniversalName(String universalName, int initialDuration) {
+    public static Status createCustomStatusFromUniversalName(String universalName, int initialDuration) {
         return new Status(universalName, initialDuration, fromUniversalName.get(universalName));
     }
     public static String toUniversalName(String actionBarName) {
         return toUniversalName.get(actionBarName);
     }
 
-    public static int calculateInitialDuration(Map.Entry<String, Integer> actionBarStatus, Map<String, DurationPair> experimental) {
+    /**
+     * Checks the user config, current runtime experimental data, and previous runtime experimental data for
+     * the initial duration of the Status, and verifies these values are even possible given the duration
+     * displayed.
+     * @param actionBarStatus
+     * @param experimental
+     * @return In order from highest to lowest priority: <ul>
+     *     <li>duration set in the user config, if set</li>
+     *     <li>median of runtime experimental data, if any</li>
+     *     <li>the previous runtime's experimental median, if any</li>
+     *     <li>displayed duration * 1000 - 500, otherwise</li>
+     * </ul>
+     */
+    public static int calculateInitialDuration(Map.Entry<String, Integer> actionBarStatus, Map<String, MedianTracker> experimental) {
         String universalName = toUniversalName(actionBarStatus.getKey());
         Integer displayedRemainingDuration = actionBarStatus.getValue();
 
-        // manual initial duration is the highest priority
         int manualInitialDuration = fromUniversalName.get(universalName).get(MANUAL_INITIAL_DURATION).getAsInt();
-        if (withinIntervalInclusive(displayedRemainingDuration, manualInitialDuration)) return manualInitialDuration;
-        // then try current session experimental data
-        if (experimental.containsKey(universalName)) {
-            int avg = experimental.get(universalName).getAverage();
-            if (withinIntervalInclusive(displayedRemainingDuration, avg)) return avg;
+        if (withinIntervalInclusive(displayedRemainingDuration, manualInitialDuration))
+            return manualInitialDuration;
+        
+        MedianTracker experimentalMedian = experimental.get(universalName);
+        if (experimentalMedian != null) {
+            if (withinIntervalInclusive(displayedRemainingDuration, experimentalMedian.getMedian()))
+                return experimentalMedian.getMedian();
         }
-        // then try previous session experimental data (from json)
+        
         int previousExperimentalDuration = fromUniversalName.get(universalName).get(EXPERIMENTAL_INITIAL_DURATION).getAsInt();
-        if (withinIntervalInclusive(displayedRemainingDuration, previousExperimentalDuration)) return previousExperimentalDuration;
+        if (withinIntervalInclusive(displayedRemainingDuration, previousExperimentalDuration))
+            return previousExperimentalDuration;
         // default
         return displayedRemainingDuration * 1000 - 500;
+    }
+    
+    /**
+     * Checks the user config manual initial duration and the current runtime experimental duration for 
+     * the initial duration of the Status.
+     * @param universalName the Status to retrieve the initial duration for
+     * @param experimental current runtime experimental duration data
+     * @return <ul>
+     *     In order from highest to lowest priority:
+     *     <li>duration set in the user config, if set</li>
+     *     <li>median of runtime experimental data, if any</li>
+     *     <li>the previous runtime's experimental median, if any</li>
+     *     <li>-1, otherwise</li>
+     * </ul>
+     */
+    public static int calculateInitialDuration(String universalName, Map<String, MedianTracker> experimental) {
+        int manualInitialDuration = fromUniversalName.get(universalName).get(MANUAL_INITIAL_DURATION).getAsInt();
+        if (manualInitialDuration > 0)
+            return manualInitialDuration;
+
+        if (experimental.containsKey(universalName))
+            return experimental.get(universalName).getMedian();
+
+        int previousExperimentalDuration = fromUniversalName.get(universalName).get(EXPERIMENTAL_INITIAL_DURATION).getAsInt();
+        if (previousExperimentalDuration > 0)
+            return previousExperimentalDuration;
+
+        return -1;
     }
     
     /**
@@ -88,22 +125,7 @@ public class StatusFactory {
         return query >= displayedRemainingDuration * 1000 - 1000 && query <= displayedRemainingDuration * 1000;
     }
 
-    /**
-     * 
-     * @param universalName
-     * @param experimental
-     * @return
-     */
-    public static int calculateInitialDuration(String universalName, Map<String, DurationPair> experimental) {
-        int manualInitialDuration = fromUniversalName.get(universalName).get(MANUAL_INITIAL_DURATION).getAsInt();
-        if (manualInitialDuration > 0)
-            return manualInitialDuration;
-        
-        if (experimental.containsKey(universalName))
-            return experimental.get(universalName).getAverage();
-        
-        return -1;
-    }
+
     public static boolean isCustomStatus(String universalName) {
         return fromUniversalName.get(universalName).get("custom").getAsBoolean();
     }

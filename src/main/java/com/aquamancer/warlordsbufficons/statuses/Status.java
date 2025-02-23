@@ -3,12 +3,11 @@ package com.aquamancer.warlordsbufficons.statuses;
 import com.google.gson.JsonObject;
 
 import java.awt.*;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.Map;
 
 public class Status {
     // todo make configurable
-    private static int SYNC_TOLERANCE_MILLIS = 250;
+    private static int DISCREPANCY_THRESHOLD_TO_SYNC = 250;
     private String universalName;
     private String actionBarName;
     private boolean isDebuff, iconEnabled, isCustom;
@@ -16,12 +15,8 @@ public class Status {
     /*
      * Custom fields for runtime
      */
-    /**
-     * Tracks the last displayed duration of this status on the action bar, to track when the duration has changed.
-     * This field will NOT be initialized when chat event creates a premature status or custom status. It will
-     * be initialized for premature statuses when there has been a match with an action bar status addition.
-     */
-    private int previousDisplayedDuration;
+    private int initialDisplayedDuration;
+    private int displayedDuration;
     // millis
     private int initialDuration;
     private int remainingDuration;
@@ -39,8 +34,8 @@ public class Status {
      * so the remaining duration should be shorter anyway. Only problem is if a particular buff is added on both
      * chat event only, and action bar event only.
      */
-    private boolean initialDurationExperimentalLogged; // whether the status duration has ticked down once and logged
-    private int initialDurationExperimental; // duration after tick down + timed time it took to tick down
+    private boolean hasExperimentalDurationBeenLogged; // whether the status duration has ticked down once and logged
+    private int experimentalDuration; // duration after tick down + timed time it took to tick down
     private final long timeAddedMillis;
 
     /*
@@ -55,15 +50,16 @@ public class Status {
         this.initialDuration = initialDuration;
         this.remainingDuration = initialDuration;
         this.timeAddedMillis = System.currentTimeMillis();
-        this.initialDurationExperimentalLogged = false;
+        this.hasExperimentalDurationBeenLogged = false;
     }
     public Status(String universalName, int initialDuration, int initialDisplayedDuration, JsonObject jsonData) {
         this.universalName = universalName;
-        this.previousDisplayedDuration = initialDisplayedDuration;
+        this.initialDisplayedDuration = initialDisplayedDuration;
+        this.displayedDuration = initialDisplayedDuration;
         this.initialDuration = initialDuration;
         this.remainingDuration = initialDuration;
         this.timeAddedMillis = System.currentTimeMillis();
-        this.initialDurationExperimentalLogged = false;
+        this.hasExperimentalDurationBeenLogged = false;
         // todo parse json, create fields, fill fields
     }
 
@@ -71,36 +67,38 @@ public class Status {
      * Syncs the remaining duration with the displayed duration.
      * @param displayedDuration the current displayed duration
      */
-    public void sync(int displayedDuration, Map<String, DurationPair> experimentalInitialDurations) {
-        if (displayedDuration == this.previousDisplayedDuration || this.isCustom) return;
-        // the displayed duration for this status has just changed
-        // handle initial duration experimental
-        if (!this.initialDurationExperimentalLogged) {
+    public void sync(int displayedDuration, Map<String, MedianTracker> experimentalInitialDurations) {
+        if (displayedDuration == this.displayedDuration) {
+            if ()
+        }
+        
+        if (displayedDuration != this.displayedDuration && !this.hasExperimentalDurationBeenLogged) {
             long currentTimeMillis = System.currentTimeMillis();
+            // calculate the precise initial duration
             int precision = (int) (currentTimeMillis - this.timeAddedMillis);
             int experimentalInitialDuration = displayedDuration * 1000 + precision;
             
-            DurationPair durationPair = experimentalInitialDurations.get(this.universalName);
-            if (durationPair == null) {
-                experimentalInitialDurations.put(universalName, new DurationPair(experimentalInitialDuration));
+            MedianTracker medianTracker = experimentalInitialDurations.get(this.universalName);
+            if (medianTracker == null) {
+                experimentalInitialDurations.put(universalName, new MedianTracker(experimentalInitialDuration));
             } else {
-                durationPair.add(experimentalInitialDuration);
+                medianTracker.add(experimentalInitialDuration);
             }
-            this.initialDurationExperimentalLogged = true;
+            this.hasExperimentalDurationBeenLogged = true;
         }
-        if (Math.abs(displayedDuration * 1000 - this.remainingDuration) > SYNC_TOLERANCE_MILLIS) {
+        if (Math.abs(displayedDuration * 1000 - this.remainingDuration) > DISCREPANCY_THRESHOLD_TO_SYNC) {
             this.remainingDuration = displayedDuration * 1000;
         }
+        this.displayedDuration = displayedDuration;
     }
-
     public long getRemainingDuration() {
         return remainingDuration;
     }
-    public int getPreviousDisplayedDuration() {
-        return this.previousDisplayedDuration;
+    public int getDisplayedDuration() {
+        return this.displayedDuration;
     }
-    public void setPreviousDisplayedDuration(int seconds) {
-        this.previousDisplayedDuration = seconds;
+    public void setDisplayedDuration(int seconds) {
+        this.displayedDuration = seconds;
     }
     public String getUniversalName() {
         return this.universalName;
@@ -113,6 +111,9 @@ public class Status {
     }
     public boolean isCustom() {
         return this.isCustom;
+    }
+    public boolean hasExperimentalDurationBeenLogged() {
+        return hasExperimentalDurationBeenLogged;
     }
 }
 
