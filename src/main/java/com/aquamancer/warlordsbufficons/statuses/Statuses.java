@@ -143,6 +143,11 @@ public class Statuses {
             this.buffs.remove(removed);
             if (cancelIcon || removed.getRemainingDuration() > REMOVE_THRESHOLD_MIN) this.displayedBuffs.remove(removed);
         }
+        // handle experimental durations for statuses with initial displayed duration = 1 second
+        if (!removed.hasExperimentalDurationBeenLogged() && removed.getInitialDisplayedDuration() == 1) {
+            int totalDuration = (int) (removed.getTimeAddedMillis() - System.currentTimeMillis());
+            MedianTracker.updateMedianTracker(totalDuration, removed.getUniversalName(), this.experimentalDurations);
+        }
     }
     public void clearPrematureStatuses() {
         this.prematureStatuses.clear();

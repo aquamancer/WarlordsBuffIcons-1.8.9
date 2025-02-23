@@ -81,12 +81,7 @@ public class Status {
                 int precision = (int) (currentTimeMillis - this.timeAddedMillis);
                 int experimentalInitialDuration = displayedDuration * 1000 + precision;
 
-                MedianTracker medianTracker = experimentalInitialDurations.get(this.universalName);
-                if (medianTracker == null) {
-                    experimentalInitialDurations.put(universalName, new MedianTracker(experimentalInitialDuration));
-                } else {
-                    medianTracker.add(experimentalInitialDuration);
-                }
+                MedianTracker.updateMedianTracker(experimentalInitialDuration, this.universalName, experimentalInitialDurations);
                 this.hasExperimentalDurationBeenLogged = true;
             }
 
@@ -105,6 +100,12 @@ public class Status {
     }
     public void setDisplayedDuration(int seconds) {
         this.displayedDuration = seconds;
+    }
+    public int getInitialDisplayedDuration() {
+        return this.initialDisplayedDuration;
+    }
+    public long getTimeAddedMillis() {
+        return this.timeAddedMillis;
     }
     public String getUniversalName() {
         return this.universalName;

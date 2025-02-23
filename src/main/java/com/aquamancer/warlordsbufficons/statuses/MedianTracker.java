@@ -1,6 +1,7 @@
 package com.aquamancer.warlordsbufficons.statuses;
 
 import java.util.Collections;
+import java.util.Map;
 import java.util.PriorityQueue;
 
 public class MedianTracker {
@@ -33,6 +34,22 @@ public class MedianTracker {
             return (low.peek() + high.peek()) / 2;
         } else {
             return low.peek();
+        }
+    }
+
+    /**
+     * 
+     * @updates map
+     * @param trial
+     * @param universalName
+     * @param map
+     */
+    public static void updateMedianTracker(Integer trial, String universalName, Map<String, MedianTracker> map) {
+        MedianTracker medianTracker = map.get(universalName);
+        if (medianTracker == null) {
+            map.put(universalName, new MedianTracker(trial));
+        } else {
+            medianTracker.add(trial);
         }
     }
 }

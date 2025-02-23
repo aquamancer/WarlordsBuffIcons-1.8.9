@@ -98,7 +98,6 @@ public class StatusController {
         List<Map.Entry<String, Integer>> addedDebuffs = ActionBarStatuses.getAdditions(previousActionBar.getDebuffs(), recentActionBar.getDebuffs(), deletedDebuffs);
 
         for (Integer deletedBuff : deletedBuffs) {
-            // todo update experimental initial durations for statuses that are < 1 second
             statuses.remove(deletedBuff, false, true); // alternatively can remove softly
         }
         // sync the durations of existing statuses up to statuses that have just been added
@@ -110,7 +109,6 @@ public class StatusController {
         statuses.processNewActionBarStatus(addedBuffs, false);
         
         for (Integer deletedDebuff : deletedDebuffs) {
-            // todo update experimental initial durations for statuses that are < 1 second
             statuses.remove(deletedDebuff, true, true);
         }
         for (int i = 0; i < statuses.getMirroredDebuffs().size(); i++) {
