@@ -8,6 +8,7 @@ import java.util.Map;
 public class Status {
     // todo make configurable
     private static int DISCREPANCY_THRESHOLD_TO_SYNC = 250;
+    private static int RECOVERY_BUFFER = 150;
     private String universalName;
     private String actionBarName;
     private boolean isDebuff, iconEnabled, isCustom;
@@ -69,27 +70,32 @@ public class Status {
      */
     public void sync(int displayedDuration, Map<String, MedianTracker> experimentalInitialDurations) {
         if (displayedDuration == this.displayedDuration) {
-            if ()
-        }
-        
-        if (displayedDuration != this.displayedDuration && !this.hasExperimentalDurationBeenLogged) {
-            long currentTimeMillis = System.currentTimeMillis();
-            // calculate the precise initial duration
-            int precision = (int) (currentTimeMillis - this.timeAddedMillis);
-            int experimentalInitialDuration = displayedDuration * 1000 + precision;
-            
-            MedianTracker medianTracker = experimentalInitialDurations.get(this.universalName);
-            if (medianTracker == null) {
-                experimentalInitialDurations.put(universalName, new MedianTracker(experimentalInitialDuration));
-            } else {
-                medianTracker.add(experimentalInitialDuration);
+            // sync to + recovery buffer if the duration drops low enough that if the duration changed now,
+            // it would have to sync
+            if (this.remainingDuration < displayedDuration * 1000 - DISCREPANCY_THRESHOLD_TO_SYNC)
+                this.remainingDuration = displayedDuration * 1000 - 1000 + RECOVERY_BUFFER;
+        } else {
+            if (!this.hasExperimentalDurationBeenLogged) {
+                long currentTimeMillis = System.currentTimeMillis();
+                // calculate the precise initial duration
+                int precision = (int) (currentTimeMillis - this.timeAddedMillis);
+                int experimentalInitialDuration = displayedDuration * 1000 + precision;
+
+                MedianTracker medianTracker = experimentalInitialDurations.get(this.universalName);
+                if (medianTracker == null) {
+                    experimentalInitialDurations.put(universalName, new MedianTracker(experimentalInitialDuration));
+                } else {
+                    medianTracker.add(experimentalInitialDuration);
+                }
+                this.hasExperimentalDurationBeenLogged = true;
             }
-            this.hasExperimentalDurationBeenLogged = true;
+
+            if (Math.abs(displayedDuration * 1000 - this.remainingDuration) > DISCREPANCY_THRESHOLD_TO_SYNC) {
+                this.remainingDuration = displayedDuration * 1000;
+            }
+
+            this.displayedDuration = displayedDuration;
         }
-        if (Math.abs(displayedDuration * 1000 - this.remainingDuration) > DISCREPANCY_THRESHOLD_TO_SYNC) {
-            this.remainingDuration = displayedDuration * 1000;
-        }
-        this.displayedDuration = displayedDuration;
     }
     public long getRemainingDuration() {
         return remainingDuration;
