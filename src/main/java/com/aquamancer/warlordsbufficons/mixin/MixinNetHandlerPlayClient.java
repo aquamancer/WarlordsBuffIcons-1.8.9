@@ -15,10 +15,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(NetHandlerPlayClient.class)
 public class MixinNetHandlerPlayClient {
     private static final Logger LOGGER = LogManager.getLogger(MixinNetHandlerPlayClient.class);
+
     @Inject(method = "handleChat", at = @At("HEAD"), cancellable = true)
     public void onChatPacketReceived(S02PacketChat packet, CallbackInfo ci) {
         IChatComponent component = packet.getChatComponent();
         String unformatted = component.getUnformattedText();
+        // todo check if in game?
         if (packet.getType() == 0 && !unformatted.isEmpty()) {
             if (unformatted.charAt(0) == '»') {
                 String statusMatch = ChatAbilityIdentifiers.getMatchSelf(unformatted);
@@ -30,5 +32,9 @@ public class MixinNetHandlerPlayClient {
         } else if (packet.getType() == 2) {
             StatusController.onActionBarPacketReceived(packet.getChatComponent());
         }
+    }
+    private boolean isWarlordsActionBar(String formattedText) {
+        // BEGIN:               §r               §6§lHP: §e§l2370§6§l/6152§r     §9§lBLU Team§r    §aLINF§7:§61 §cCRIP§7:§63 §cWND§7:§63 §r§r
+
     }
 }
