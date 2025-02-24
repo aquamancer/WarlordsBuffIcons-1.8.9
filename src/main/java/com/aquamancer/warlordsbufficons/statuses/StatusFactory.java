@@ -34,11 +34,25 @@ public class StatusFactory {
         return new Status(universalName, initialDuration, initialDisplayedDuration, fromUniversalName.get(universalName));
     }
     public static Status createStatusFromActionBarName(String actionBarName, int initialDuration, int initialDisplayedDuration) {
-        return new Status(toUniversalName(actionBarName), initialDuration, initialDisplayedDuration, fromUniversalName.get(toUniversalName(actionBarName)));
+        if (toUniversalName.containsKey(actionBarName)) {
+            return new Status(toUniversalName(actionBarName), initialDuration, initialDisplayedDuration, fromUniversalName.get(toUniversalName(actionBarName)));
+        } else {
+            return createUnrecognizedStatus(initialDuration, initialDisplayedDuration);
+        }
     }
 
     public static Status createCustomStatusFromUniversalName(String universalName, int initialDuration) {
         return new Status(universalName, initialDuration, fromUniversalName.get(universalName));
+    }
+
+    /**
+     * Creates an unrecognized Status.
+     * @param initialDuration
+     * @param initialDisplayedDuration
+     * @return
+     */
+    public static Status createUnrecognizedStatus(int initialDuration, int initialDisplayedDuration) {
+        return new Status(initialDuration, initialDisplayedDuration);
     }
     public static String toUniversalName(String actionBarName) {
         return toUniversalName.get(actionBarName);

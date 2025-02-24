@@ -6,11 +6,11 @@ import java.awt.*;
 import java.util.Map;
 
 public class Status {
+    private final boolean isUnrecognized;
     // todo make configurable
     private static int DISCREPANCY_THRESHOLD_TO_SYNC = 250;
     private static int RECOVERY_BUFFER = 150;
     private String universalName;
-    private String actionBarName;
     private boolean isDebuff, iconEnabled, isCustom;
     private Color border;
     /*
@@ -46,21 +46,40 @@ public class Status {
      *      - initial duration logging
      * stacking info
      */
-    public Status(String universalName, int initialDuration, JsonObject jsonData) {
+    private Status() {
+        this.timeAddedMillis = System.currentTimeMillis();
+        this.hasExperimentalDurationBeenLogged = false;
+        this.isUnrecognized = false;
+    }
+
+    /**
+     * Creates an unrecognized Status.
+     * @param initialDuration
+     * @param initialDisplayedDuration
+     */
+    protected Status(int initialDuration, int initialDisplayedDuration) {
+        this.timeAddedMillis = System.currentTimeMillis();
+        this.hasExperimentalDurationBeenLogged = false;
+        this.initialDuration = initialDuration;
+        this.remainingDuration = initialDuration;
+        this.initialDisplayedDuration = initialDisplayedDuration;
+        
+        this.isUnrecognized = true;
+    }
+    protected Status(String universalName, int initialDuration, JsonObject jsonData) {
+        this();
         this.universalName = universalName;
         this.initialDuration = initialDuration;
         this.remainingDuration = initialDuration;
-        this.timeAddedMillis = System.currentTimeMillis();
-        this.hasExperimentalDurationBeenLogged = false;
     }
-    public Status(String universalName, int initialDuration, int initialDisplayedDuration, JsonObject jsonData) {
+    protected Status(String universalName, int initialDuration, int initialDisplayedDuration, JsonObject jsonData) {
+        this();
+        // todo handle jsonData = null (unrecognized status)
         this.universalName = universalName;
         this.initialDisplayedDuration = initialDisplayedDuration;
         this.displayedDuration = initialDisplayedDuration;
         this.initialDuration = initialDuration;
         this.remainingDuration = initialDuration;
-        this.timeAddedMillis = System.currentTimeMillis();
-        this.hasExperimentalDurationBeenLogged = false;
         // todo parse json, create fields, fill fields
     }
 
@@ -75,7 +94,7 @@ public class Status {
             if (this.remainingDuration < displayedDuration * 1000 - DISCREPANCY_THRESHOLD_TO_SYNC)
                 this.remainingDuration = displayedDuration * 1000 - 1000 + RECOVERY_BUFFER;
         } else {
-            if (!this.hasExperimentalDurationBeenLogged) {
+            if (!this.hasExperimentalDurationBeenLogged && !this.isUnrecognized) {
                 long currentTimeMillis = System.currentTimeMillis();
                 // calculate the precise initial duration
                 int precision = (int) (currentTimeMillis - this.timeAddedMillis);
@@ -88,9 +107,11 @@ public class Status {
             if (Math.abs(displayedDuration * 1000 - this.remainingDuration) > DISCREPANCY_THRESHOLD_TO_SYNC) {
                 this.remainingDuration = displayedDuration * 1000;
             }
-
             this.displayedDuration = displayedDuration;
         }
+    }
+    public boolean isUnrecognized() {
+        return this.isUnrecognized;
     }
     public long getRemainingDuration() {
         return remainingDuration;

@@ -61,7 +61,7 @@ public class Statuses {
      * @param isActionBarDebuff whether the displayed action bar classifies the new status as a debuff
      * @param premature if the new status is a premature status
      */
-    public void add(Status status, boolean isActionBarDebuff, boolean premature) {
+    public void addActionBarStatus(Status status, boolean isActionBarDebuff, boolean premature) {
         if (premature) {
             this.prematureStatuses.add(status);
             return;
@@ -79,6 +79,14 @@ public class Statuses {
         this.addToAll(status, isActionBarDebuff);
     }
     private void addToAll(Status status, boolean isActionBarDebuff) {
+        if (isActionBarDebuff) {
+            this.mirroredDebuffs.add(status);
+        } else {
+            this.mirroredBuffs.add(status);
+        }
+        
+        if (status.isUnrecognized()) return;
+        
         if (status.isDebuff()) {
             this.debuffs.add(status);
             if (status.iconEnabled()) displayedDebuffs.add(status);
@@ -86,13 +94,7 @@ public class Statuses {
             this.buffs.add(status);
             if (status.iconEnabled()) displayedBuffs.add(status);
         }
-        if (isActionBarDebuff) {
-            this.mirroredDebuffs.add(status);
-        } else {
-            this.mirroredBuffs.add(status);
-        }
     }
-
 
     public void processNewActionBarStatus(List<Map.Entry<String, Integer>> actionBarStatuses, boolean isActionBarDebuff) {
         for (Map.Entry<String, Integer> actionBarStatus : actionBarStatuses) {
@@ -101,7 +103,7 @@ public class Statuses {
                     StatusFactory.calculateInitialDuration(actionBarStatus, experimentalDurations),
                     actionBarStatus.getValue()
                     );
-            this.add(status, isActionBarDebuff, false);
+            this.addActionBarStatus(status, isActionBarDebuff, false);
         }
     }
 
