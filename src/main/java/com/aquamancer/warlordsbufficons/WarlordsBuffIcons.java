@@ -8,8 +8,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 public class WarlordsBuffIcons {
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        // todo register events
-        // MinecraftForge.EVENT_BUS.register(new ChatHandler());
-        MinecraftForge.EVENT_BUS.register(this);
+        
     }
+
 }

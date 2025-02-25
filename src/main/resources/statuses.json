@@ -1,9 +1,9 @@
 {
   "timeWarp": {
+    "custom": false,
     "actionBarName": "WARP",
     "enabled": true,
     "type": "buff",
-    "custom": false,
     "border": "green",
     "icon": "foo.png",
     "manualInitialDuration": -1,

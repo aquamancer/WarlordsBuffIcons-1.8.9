@@ -42,9 +42,6 @@ public class StatusController {
      * @param bar
      */
     public static void onActionBarPacketReceived(IChatComponent bar) {
-        String message = bar.getUnformattedText();
-        // verify the action bar message is warlords in game action bar, not something else, like +5 coins
-        // todo add filter
         ActionBarStatuses currentActionBar = parseStatusesFromActionBar(bar);
         if (currentActionBar.equals(previousActionBar)) return;
         onActionBarStatusesChanged(currentActionBar);
