@@ -32,4 +32,19 @@ public class ChatUtils {
             parseFormattedChatMessage(message.substring(startOfNextSubstring), list);
         }
     }
+    public static boolean isWarlordsActionBar(String formattedText) {
+        // BEGIN:               §r               §6§lHP: §e§l2370§6§l/6152§r     §9§lBLU Team§r    §aLINF§7:§61 §cCRIP§7:§63 §cWND§7:§63 §r§r
+        List<Map.Entry<String, Set<Character>>> components = new ArrayList<>();
+        parseFormattedChatMessage(formattedText, components);
+        
+        for (int i = 0; i < components.size() - 4; i++) {
+            if (
+                    components.get(i).getKey().equals("HP: ")
+                    && components.get(i + 1).getKey().matches("\\d+")
+                    && components.get(i + 2).getKey().matches("/\\d+")
+                    && components.get(i + 4).getKey().contains("Team")
+            ) return true;
+        }
+        return false;
+    }
 }

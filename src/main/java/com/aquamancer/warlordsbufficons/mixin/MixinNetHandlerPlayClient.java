@@ -2,6 +2,7 @@ package com.aquamancer.warlordsbufficons.mixin;
 
 import com.aquamancer.warlordsbufficons.StatusController;
 import com.aquamancer.warlordsbufficons.chat.ChatAbilityIdentifiers;
+import com.aquamancer.warlordsbufficons.chat.ChatUtils;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.play.server.S02PacketChat;
 import net.minecraft.util.IChatComponent;
@@ -19,6 +20,7 @@ public class MixinNetHandlerPlayClient {
     @Inject(method = "handleChat", at = @At("HEAD"), cancellable = true)
     public void onChatPacketReceived(S02PacketChat packet, CallbackInfo ci) {
         IChatComponent component = packet.getChatComponent();
+        String formatted = component.getFormattedText();
         String unformatted = component.getUnformattedText();
         // todo check if in game?
         if (packet.getType() == 0 && !unformatted.isEmpty()) {
@@ -29,12 +31,8 @@ public class MixinNetHandlerPlayClient {
                 String statusMatch = ChatAbilityIdentifiers.getMatchExternal(unformatted);
                 if (statusMatch != null) StatusController.onChatStatus(unformatted);
             }
-        } else if (packet.getType() == 2) {
+        } else if (packet.getType() == 2 && ChatUtils.isWarlordsActionBar(formatted)) {
             StatusController.onActionBarPacketReceived(packet.getChatComponent());
         }
-    }
-    private boolean isWarlordsActionBar(String formattedText) {
-        // BEGIN:               §r               §6§lHP: §e§l2370§6§l/6152§r     §9§lBLU Team§r    §aLINF§7:§61 §cCRIP§7:§63 §cWND§7:§63 §r§r
-
     }
 }

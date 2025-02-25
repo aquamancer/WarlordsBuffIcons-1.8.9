@@ -119,4 +119,10 @@ public class ChatUtilsTest {
         List<Map.Entry<String, Set<Character>>> exp = new ArrayList<>();
         parseFormattedChatMessage("d" + S + S + "c" + S, t);
     }
+    @Test
+    public void td() {
+        List<Map.Entry<String, Set<Character>>> t = new ArrayList<>();
+        parseFormattedChatMessage("               §r               §6§lHP: §e§l2370§6§l/6152§r     §9§lBLU Team§r    §aLINF§7:§61 §cCRIP§7:§63 §cWND§7:§63 §r§r", t);
+        System.out.println(t);
+    }
 }
