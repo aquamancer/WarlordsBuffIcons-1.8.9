@@ -8,7 +8,7 @@ import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 public class WarlordsBuffIcons {
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
-        
+        FileManager.init();
     }
 
 }
