@@ -12,6 +12,7 @@ import java.io.*;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
 public class FileManager {
     private static final Logger LOGGER = LogManager.getLogger(FileManager.class);
@@ -66,17 +67,20 @@ public class FileManager {
     }
 
     private static void loadActiveConfigs(JsonParser parser) {
-        try {
-            if (!CONFIG_FILE.exists()) {
-                Files.copy(classLoader.getResourceAsStream("config.json"), CONFIG_FILE.toPath());
-            }
-        } catch (IOException ex) {
-            LOGGER.error("copying config.json from resources to .minecraft filesystem failed");
-        }
-        try (FileReader configReader = new FileReader(CONFIG_FILE)){
+        try (BufferedReader configReader = new BufferedReader(new FileReader(CONFIG_FILE))){
             config = parser.parse(configReader).getAsJsonObject();
-        } catch (IOException ex) {
-            LOGGER.error("failed reading {}", CONFIG_FILE);
+        } catch (IOException | RuntimeException ex) {
+            LOGGER.warn("failed reading {}. copying config defaults", CONFIG_FILE);
+            try {
+                Files.copy(classLoader.getResourceAsStream("config.json"), CONFIG_FILE.toPath(), StandardCopyOption.REPLACE_EXISTING);
+                try (BufferedReader configReader = new BufferedReader(new FileReader(CONFIG_FILE))) {
+                    config = parser.parse(configReader).getAsJsonObject();
+                } catch (IOException ex1) {
+                    LOGGER.error("error while reading default config file.");
+                }
+            } catch (IOException ex1) {
+                LOGGER.error("failed copying and overwriting the default config file.");
+            }
         }
         try {
             chatIdentifiers = parser.parse(new FileReader(new File(CONFIG_DIR, config.get("chatIdentifiers").getAsString()))).getAsJsonObject();
@@ -117,27 +121,6 @@ public class FileManager {
             } catch (IOException ioException) {
                 LOGGER.error("error modifying config file while resetting statuses to default because it didn't exist");
             }
-        }
-    }
-    
-    private static void initializeConfigFile(JsonParser parser) {
-        try (FileReader configReader = new FileReader(CONFIG_FILE)){
-            if (!CONFIG_FILE.exists()) {
-                Files.copy(classLoader.getResourceAsStream("config.json"), CONFIG_FILE.toPath());
-            }
-            config = parser.parse(configReader).getAsJsonObject();
-        } catch (IllegalStateException ex) {
-            
-        } catch (IOException ex) {
-            LOGGER.error("copying config.json from resources to .minecraft filesystem failed");
-        }
-        try {
-            
-        }
-    }
-    private static JsonObject getValidJson(InputStream stream, Path target) {
-        try {
-            Files.copy
         }
     }
     
