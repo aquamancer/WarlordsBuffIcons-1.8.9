@@ -84,7 +84,7 @@ public class FileManager {
         }
         try {
             chatIdentifiers = parser.parse(new FileReader(new File(CONFIG_DIR, config.get("chatIdentifiers").getAsString()))).getAsJsonObject();
-        } catch (FileNotFoundException ex) {
+        } catch (Exception ex) {
             LOGGER.warn("could not locate chat identifiers file: {}. resetting to default", config.get("chatIdentifiers").getAsString());
             File defaultChatIdentifiers = new File(CONFIG_DIR, "chat-identifiers.json");
             if (!defaultChatIdentifiers.exists()) {
