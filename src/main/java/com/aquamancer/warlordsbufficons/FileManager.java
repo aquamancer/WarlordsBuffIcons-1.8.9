@@ -1,9 +1,8 @@
 package com.aquamancer.warlordsbufficons;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.google.gson.stream.JsonWriter;
+import com.google.gson.stream.MalformedJsonException;
 import net.minecraft.client.Minecraft;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -60,65 +59,82 @@ public class FileManager {
                 try {
                     Files.copy(classLoader.getResourceAsStream(preset), new File(STATUSES_DIR, preset).toPath());
                 } catch (IOException ex) {
-                    LOGGER.warn("failure copying statuses preset: {} to .minecraft file system", preset);
+                    LOGGER.warn("failure copying statuses preset: {} to .minecraft file system. does it already exist?", preset);
                 }
             }
         }
     }
 
     private static void loadActiveConfigs(JsonParser parser) {
+        loadConfigFile(parser);
+        loadChatIdentifiersFile(parser);
+        loadStatusesFile(parser);
+    }
+    private static void loadConfigFile(JsonParser parser) {
         try (BufferedReader configReader = new BufferedReader(new FileReader(CONFIG_FILE))){
             config = parser.parse(configReader).getAsJsonObject();
-        } catch (IOException | RuntimeException ex) {
+        } catch (Exception ex) {
             LOGGER.warn("failed reading {}. copying config defaults", CONFIG_FILE);
             try {
                 Files.copy(classLoader.getResourceAsStream("config.json"), CONFIG_FILE.toPath(), StandardCopyOption.REPLACE_EXISTING);
                 try (BufferedReader configReader = new BufferedReader(new FileReader(CONFIG_FILE))) {
                     config = parser.parse(configReader).getAsJsonObject();
-                } catch (IOException ex1) {
+                } catch (IOException | RuntimeException ex1) {
                     LOGGER.error("error while reading default config file.");
                 }
             } catch (IOException ex1) {
                 LOGGER.error("failed copying and overwriting the default config file.");
             }
         }
-        try {
-            chatIdentifiers = parser.parse(new FileReader(new File(CONFIG_DIR, config.get("chatIdentifiers").getAsString()))).getAsJsonObject();
+    }
+    private static void loadChatIdentifiersFile(JsonParser parser) {
+        try (BufferedReader chatIdentifiersReader = new BufferedReader(new FileReader(new File(CONFIG_DIR, config.get("chatIdentifiers").getAsString())))) {
+            chatIdentifiers = parser.parse(chatIdentifiersReader).getAsJsonObject();
         } catch (Exception ex) {
-            LOGGER.warn("could not locate chat identifiers file: {}. resetting to default", config.get("chatIdentifiers").getAsString());
+            LOGGER.warn("error parsing chat identifiers file: {}. resetting to default", config.get("chatIdentifiers").getAsString());
             File defaultChatIdentifiers = new File(CONFIG_DIR, "chat-identifiers.json");
-            if (!defaultChatIdentifiers.exists()) {
-                try {
-                    Files.copy(classLoader.getResourceAsStream("chat-identifiers.json"), defaultChatIdentifiers.toPath());
-                } catch (IOException ioException) {
-                    LOGGER.error("chat identifiers json file specified by config file does not exist, and there was an error copying the default from resources to the .minecraft file system");
-                }
+            try {
+                Files.copy(classLoader.getResourceAsStream("chat-identifiers.json"), defaultChatIdentifiers.toPath());
+            } catch (FileAlreadyExistsException existsException) {
+            } catch (IOException ioException) {
+                LOGGER.error("chat identifiers json file specified by config file does not exist, and there was an error copying the default from resources to the .minecraft file system");
             }
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(CONFIG_FILE))) {
+            try (BufferedWriter configWriter = new BufferedWriter(new FileWriter(CONFIG_FILE));
+                 BufferedReader defaultReader = new BufferedReader(new FileReader(defaultChatIdentifiers));
+            ) {
+                chatIdentifiers = parser.parse(defaultReader).getAsJsonObject();
                 config.addProperty("chatIdentifiers", "chat-identifiers.json");
                 Gson gson = new Gson();
-                gson.toJson(config, writer);
-            } catch (IOException ioException) {
+                gson.toJson(config, configWriter);
+            } catch (MalformedJsonException | JsonParseException jsonParseException) {
+                LOGGER.error("chat-identifiers.json is malformed");
+            } catch (Exception ex1) {
                 LOGGER.error("error modifying config file while resetting chatIdentifiers to default because it didn't exist");
             }
         }
-        try {
-            statuses = parser.parse(new FileReader(new File(STATUSES_DIR, config.get("statuses").getAsString()))).getAsJsonObject();
-        } catch (FileNotFoundException ex) {
+    }
+    private static void loadStatusesFile(JsonParser parser) {
+        try (BufferedReader statusesReader = new BufferedReader(new FileReader(new File(STATUSES_DIR, config.get("statuses").getAsString())))) {
+            statuses = parser.parse(statusesReader).getAsJsonObject();
+        } catch (Exception ex) {
             LOGGER.warn("could not locate statuses file: {}. resetting to default", config.get("statuses").getAsString());
             File defaultStatuses = new File(STATUSES_DIR, "statuses.json");
-            if (!defaultStatuses.exists()) {
-                try {
-                    Files.copy(classLoader.getResourceAsStream("statuses.json"), defaultStatuses.toPath());
-                } catch (IOException ioException) {
-                    LOGGER.error("statuses json file specified by config file does not exist, and there was an error copying the default from resources to the .minecraft file system");
-                }
+            try {
+                Files.copy(classLoader.getResourceAsStream("statuses.json"), defaultStatuses.toPath());
+            } catch (FileAlreadyExistsException ex1) {
+            } catch (IOException ioException) {
+                LOGGER.error("statuses json file specified by config file does not exist, and there was an error copying the default from resources to the .minecraft file system");
             }
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter(CONFIG_FILE))) {
+            try (BufferedWriter configWriter = new BufferedWriter(new FileWriter(CONFIG_FILE));
+                 BufferedReader reader = new BufferedReader(new FileReader(defaultStatuses));
+            ) {
+                statuses = parser.parse(reader).getAsJsonObject();
                 config.addProperty("statuses", "statuses.json");
                 Gson gson = new Gson();
-                gson.toJson(config, writer);
-            } catch (IOException ioException) {
+                gson.toJson(config, configWriter);
+            } catch (MalformedJsonException | JsonParseException jsonParseException) {
+                LOGGER.error("statuses.json is malformed");
+            } catch (Exception ex1) {
                 LOGGER.error("error modifying config file while resetting statuses to default because it didn't exist");
             }
         }
