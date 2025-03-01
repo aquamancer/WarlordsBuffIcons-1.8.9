@@ -9,9 +9,6 @@
     "manualInitialDuration": -1,
     "experimentalInitialDuration": -1,
     "priority": 0,
-    "stacking": {
-      "enabled": false
-    }
   },
   "chainLightning": {
     "actionBarName": "CHAIN",
@@ -21,10 +18,5 @@
     "icon": "foo.png",
     "staticInitialDuration": -1,
     "priority": 0,
-    "stacking": {
-      "enabled": true,
-      "maxStacks": 3,
-      "millisDelta": 20
-    }
   }
 }

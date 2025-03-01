@@ -1,5 +1,6 @@
 package com.aquamancer.warlordsbufficons.chat;
 
+import com.aquamancer.warlordsbufficons.FileManager;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -34,30 +35,20 @@ public class ChatAbilityIdentifiers {
 
     private static final String JSON_NAME = "chat-identifiers.json";
     private static final Logger LOGGER = LogManager.getLogger(ChatAbilityIdentifiers.class);
-    public static void loadChatMatches() {
+    public static void init() {
         operationsSelf = new ArrayList<>();
         operationsExternal = new ArrayList<>();
 
-        // todo replace this with user config, not default json, maybe if exception is thrown use defaults instead
-        try (InputStream jsonStream = ChatAbilityIdentifiers.class.getClassLoader().getResourceAsStream(JSON_NAME)) {
-            if (jsonStream == null) {
-                LOGGER.error("parsing chat ability identifier: {} resulted in a null InputStream: ", JSON_NAME);
-                // todo temporarily disable chat dependency
-                return;
-            }
-            JsonParser parser = new JsonParser();
-            JsonObject json = parser.parse(new InputStreamReader(jsonStream)).getAsJsonObject();
-            JsonObject incoming = json.get("self").getAsJsonObject();
-            JsonObject outgoing = json.get("external").getAsJsonObject();
-            for (Map.Entry<String, JsonElement> status : incoming.entrySet()) {
-                operationsSelf.add(s -> s.contains(status.getValue().getAsJsonObject().get("contains").getAsString()) ? status.getKey() : null);
-            }
-            for (Map.Entry<String, JsonElement> status : outgoing.entrySet()) {
-                operationsExternal.add(s -> s.contains(status.getValue().getAsJsonObject().get("contains").getAsString()) ? status.getKey() : null);
-            }
-        } catch (IOException ex) {
-            LOGGER.error("could not load chat ability identifier json file: {}", JSON_NAME);
-            // todo temporarily disable chat dependency
+        JsonObject chatIdentifiers = FileManager.getChatIdentifiers();
+        if (chatIdentifiers == null) return;
+        
+        JsonObject incoming = chatIdentifiers.get("self").getAsJsonObject();
+        JsonObject outgoing = chatIdentifiers.get("external").getAsJsonObject();
+        for (Map.Entry<String, JsonElement> status : incoming.entrySet()) {
+            operationsSelf.add(s -> s.contains(status.getValue().getAsJsonObject().get("contains").getAsString()) ? status.getKey() : null);
+        }
+        for (Map.Entry<String, JsonElement> status : outgoing.entrySet()) {
+            operationsExternal.add(s -> s.contains(status.getValue().getAsJsonObject().get("contains").getAsString()) ? status.getKey() : null);
         }
     }
     public static String getMatchSelf(String chatMessage) {

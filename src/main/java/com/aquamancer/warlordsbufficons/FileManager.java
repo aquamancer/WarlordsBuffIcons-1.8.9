@@ -6,6 +6,7 @@ import com.google.gson.stream.MalformedJsonException;
 import net.minecraft.client.Minecraft;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
 import java.nio.file.FileAlreadyExistsException;
@@ -65,7 +66,7 @@ public class FileManager {
         }
     }
 
-    private static void loadActiveConfigs(JsonParser parser) {
+    public static void loadActiveConfigs(JsonParser parser) {
         loadConfigFile(parser);
         loadChatIdentifiersFile(parser);
         loadStatusesFile(parser);
@@ -139,15 +140,15 @@ public class FileManager {
             }
         }
     }
-    
+    @Nullable
     public static JsonObject getStatuses() {
         return statuses;
     }
-
+    @Nullable
     public static JsonObject getChatIdentifiers() {
         return chatIdentifiers;
     }
-    
+    @Nullable
     public static JsonObject getConfig() {
         return config;
     }

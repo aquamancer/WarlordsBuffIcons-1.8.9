@@ -37,18 +37,6 @@ public class StatusController {
         ACTION BAR METHODS -------------------------------------------------------
      */
 
-    /**
-     * Handles every action bar packet received.
-     * @param bar
-     */
-    public static void onActionBarPacketReceived(IChatComponent bar) {
-        ActionBarStatuses currentActionBar = parseStatusesFromActionBar(bar);
-        if (currentActionBar.equals(previousActionBar)) return;
-        onActionBarStatusesChanged(currentActionBar);
-        
-        previousActionBar = currentActionBar;
-    }
-
     private static ActionBarStatuses parseStatusesFromActionBar(IChatComponent actionBar) {
         // [21:44:10] [Netty Client IO #6/INFO]: [net.minecraft.client.network.NetHandlerPlayClient:handler$zhl000$onChatPacketReceived:6496]:          §r          §6§lHP: §2§l4216§6§l/5571§r     §c§lRED Team§r    §aORBS§7:§610 §cWND§7:§63 §r§r
         // :handler$zhl000$onChatPacketReceived:6496]:               §r               §6§lHP: §e§l2370§6§l/6152§r     §9§lBLU Team§r    §aLINF§7:§61 §cCRIP§7:§63 §cWND§7:§63 §r§r
@@ -85,10 +73,12 @@ public class StatusController {
      * Compares the previous raw action bar data to the recent raw action bar data. All found status additions are
      * added to statuses, and all status removals are removed from statuses. Statuses whose duration has changed
      * in this packet and are in the same index (after removals) will have their durations synced.
-     * @param recentActionBar
+     * @param bar 
      */
     // todo how do we handle status name not recognized. need to maintain mirrored order no matter what
-    private static void onActionBarStatusesChanged(ActionBarStatuses recentActionBar) {
+    public static void onActionBarPacketReceived(IChatComponent bar) {
+        ActionBarStatuses recentActionBar = parseStatusesFromActionBar(bar);
+        
         Set<Integer> deletedBuffs = ActionBarStatuses.getDeletions(previousActionBar.getBuffs(), recentActionBar.getBuffs(), statuses.getMirroredBuffs());
         List<Map.Entry<String, Integer>> addedBuffs = ActionBarStatuses.getAdditions(previousActionBar.getBuffs(), recentActionBar.getBuffs(), deletedBuffs);
         Set<Integer> deletedDebuffs = ActionBarStatuses.getDeletions(previousActionBar.getDebuffs(), recentActionBar.getDebuffs(), statuses.getMirroredDebuffs());
@@ -97,12 +87,9 @@ public class StatusController {
         for (Integer deletedBuff : deletedBuffs) {
             statuses.remove(deletedBuff, false, true); // alternatively can remove softly
         }
-        // sync the durations of existing statuses up to statuses that have just been added
-        // master and mirrored statuses have not yet been updated with the new buffs, so its size will be <= recentActionBar
         for (int i = 0; i < statuses.getMirroredBuffs().size(); i++) {
             statuses.getMirroredBuffs().get(i).sync(recentActionBar.getBuffs().get(i).getValue(), statuses.getExperimentalDurations());
         }
-        // add the new statuses
         statuses.processNewActionBarStatus(addedBuffs, false);
         
         for (Integer deletedDebuff : deletedDebuffs) {
@@ -112,6 +99,10 @@ public class StatusController {
             statuses.getMirroredBuffs().get(i).sync(recentActionBar.getDebuffs().get(i).getValue(), statuses.getExperimentalDurations());
         }
         statuses.processNewActionBarStatus(addedDebuffs, true);
-        statuses.clearPrematureStatuses();
+        
+        if (!recentActionBar.equals(previousActionBar)) {
+            statuses.clearPrematureStatuses();
+        }
+        previousActionBar = recentActionBar;
     }
 }

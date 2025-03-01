@@ -1,5 +1,6 @@
 package com.aquamancer.warlordsbufficons.statuses;
 
+import com.aquamancer.warlordsbufficons.FileManager;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -20,11 +21,14 @@ public class StatusFactory {
     private static final String MANUAL_INITIAL_DURATION = "manualInitialDuration"; // required for all objects in json otherwise nullpointerexception
     private static final String EXPERIMENTAL_INITIAL_DURATION = "experimentalInitialDuration"; // required for all objects in json otherwise nullpointerexception
     
-    public static void loadJson(JsonObject json) {
+    public static void init() {
         fromUniversalName = new HashMap<>();
         toUniversalName = new HashMap<>();
         
-        for (Map.Entry<String, JsonElement> status : json.entrySet()) {
+        JsonObject statuses = FileManager.getStatuses();
+        if (statuses == null) return;
+        
+        for (Map.Entry<String, JsonElement> status : statuses.entrySet()) {
             JsonObject statusFields = status.getValue().getAsJsonObject();
             fromUniversalName.put(status.getKey(), statusFields);
             toUniversalName.put(statusFields.get("actionBarName").getAsString(), status.getKey());
