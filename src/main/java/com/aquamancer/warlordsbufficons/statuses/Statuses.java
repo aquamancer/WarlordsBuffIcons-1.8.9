@@ -1,5 +1,7 @@
 package com.aquamancer.warlordsbufficons.statuses;
 
+import net.minecraft.client.Minecraft;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -147,7 +149,7 @@ public class Statuses {
         }
         // handle experimental durations for statuses with initial displayed duration = 1 second
         if (!removed.hasExperimentalDurationBeenLogged() && removed.getInitialDisplayedDuration() == 1) {
-            int totalDuration = (int) (removed.getTimeAddedMillis() - System.currentTimeMillis());
+            int totalDuration = (int) (removed.getTimeAddedMillis() - Minecraft.getSystemTime());
             MedianTracker.updateMedianTracker(totalDuration, removed.getUniversalName(), this.experimentalDurations);
         }
     }
@@ -175,5 +177,13 @@ public class Statuses {
     }
     public Map<String, MedianTracker> getExperimentalDurations() {
         return this.experimentalDurations;
+    }
+
+    public List<Status> getDisplayedBuffs() {
+        return displayedBuffs;
+    }
+
+    public List<Status> getDisplayedDebuffs() {
+        return displayedDebuffs;
     }
 }

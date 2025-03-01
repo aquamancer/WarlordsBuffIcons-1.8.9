@@ -1,6 +1,7 @@
 package com.aquamancer.warlordsbufficons.statuses;
 
 import com.google.gson.JsonObject;
+import net.minecraft.client.Minecraft;
 
 import java.awt.*;
 import java.util.Map;
@@ -47,7 +48,7 @@ public class Status {
      * stacking info
      */
     private Status() {
-        this.timeAddedMillis = System.currentTimeMillis();
+        this.timeAddedMillis = Minecraft.getSystemTime();
         this.hasExperimentalDurationBeenLogged = false;
         this.isUnrecognized = false;
     }
@@ -58,7 +59,7 @@ public class Status {
      * @param initialDisplayedDuration
      */
     protected Status(int initialDuration, int initialDisplayedDuration) {
-        this.timeAddedMillis = System.currentTimeMillis();
+        this.timeAddedMillis = Minecraft.getSystemTime();
         this.hasExperimentalDurationBeenLogged = false;
         this.initialDuration = initialDuration;
         this.remainingDuration = initialDuration;
@@ -95,7 +96,7 @@ public class Status {
                 this.remainingDuration = displayedDuration * 1000 - 1000 + RECOVERY_BUFFER;
         } else {
             if (!this.hasExperimentalDurationBeenLogged && !this.isUnrecognized) {
-                long currentTimeMillis = System.currentTimeMillis();
+                long currentTimeMillis = Minecraft.getSystemTime();
                 // calculate the precise initial duration
                 int precision = (int) (currentTimeMillis - this.timeAddedMillis);
                 int experimentalInitialDuration = displayedDuration * 1000 + precision;
