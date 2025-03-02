@@ -4,3 +4,4 @@ run/
 build/
 .gradle/
 
+src/main/resources/assets/warlordsbufficons-1.8.9/textures/gui/*

@@ -8,7 +8,7 @@
     "icon": "foo.png",
     "manualInitialDuration": -1,
     "experimentalInitialDuration": -1,
-    "priority": 0,
+    "priority": 0
   },
   "chainLightning": {
     "actionBarName": "CHAIN",
@@ -17,6 +17,6 @@
     "border": "green",
     "icon": "foo.png",
     "staticInitialDuration": -1,
-    "priority": 0,
+    "priority": 0
   }
 }

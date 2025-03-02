@@ -1,17 +1,21 @@
 package com.aquamancer.warlordsbufficons;
 
 import com.google.gson.*;
-import com.google.gson.stream.JsonWriter;
 import com.google.gson.stream.MalformedJsonException;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.FileResourcePack;
+import net.minecraft.client.resources.FolderResourcePack;
+import net.minecraft.client.resources.IResourceManager;
+import net.minecraft.client.resources.SimpleReloadableResourceManager;
+import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.*;
+import java.net.URISyntaxException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 
 public class FileManager {
@@ -24,10 +28,12 @@ public class FileManager {
     private static final File CONFIG_FILE = new File(CONFIG_DIR, "config.json");
     private static final File STATUSES_DIR = new File(CONFIG_DIR, "statuses");
     private static final File ASSETS_DIR = new File(ROOT_DIR, "assets");
+    private static final File RESOURCE_DIR = new File(ASSETS_DIR, "warlordsbufficons-1.8.9");
 
     /**
      * Files to copy from resources to mod folder on the first program execution.
      */
+    // todo copy directory instead
     private static final String[] STATUSES_PRESETS = new String[] {};
 
     private static JsonObject defaultChatIdentifiers;
@@ -54,6 +60,7 @@ public class FileManager {
         }
         
         loadActiveConfigs(parser);
+        loadResources();
         
         if (firstLaunch) {
             for (String preset : STATUSES_PRESETS) {
@@ -140,6 +147,23 @@ public class FileManager {
             }
         }
     }
+    public static void loadResources() {
+        if (!RESOURCE_DIR.exists() || !RESOURCE_DIR.isDirectory()) {
+            try {
+                FileUtils.copyDirectory(new File(classLoader.getResource("assets/warlordsbufficons-1.8.9").toURI()), RESOURCE_DIR);
+            } catch (IOException | URISyntaxException | NullPointerException ex) {
+                LOGGER.error("could not copy resource pack from resources to .minecraft filesystem.");
+                return;
+            }
+        }
+        FolderResourcePack resourcePack = new FolderResourcePack(RESOURCE_DIR);
+        IResourceManager resourceManager = Minecraft.getMinecraft().getResourceManager();
+        if (resourceManager instanceof SimpleReloadableResourceManager) {
+            ((SimpleReloadableResourceManager) resourceManager).reloadResourcePack(resourcePack);
+        } else {
+            LOGGER.error("resourceManager is not an instance of SimpleReloadableResourceManager. Couldn't load resource pack.");
+        }
+    }
     @Nullable
     public static JsonObject getStatuses() {
         return statuses;
@@ -151,6 +175,9 @@ public class FileManager {
     @Nullable
     public static JsonObject getConfig() {
         return config;
+    }
+    public static File getAssetsDir() {
+        return ASSETS_DIR;
     }
 
     public static JsonObject getDefaultConfig() {
