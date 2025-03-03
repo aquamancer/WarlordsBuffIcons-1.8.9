@@ -11,21 +11,32 @@ import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.SimpleReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
 
 public class IconRenderer {
+    public static boolean enabled = true;
+    private static final Logger LOGGER = LogManager.getLogger(IconRenderer.class);
     private static final GuiIngame gui = Minecraft.getMinecraft().ingameGUI;
     private static final TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
     private static final Tessellator tessellator = Tessellator.getInstance();
     private static SimpleReloadableResourceManager resourceManager;
     
     public static void init() {
-        
+        if (Minecraft.getMinecraft().getResourceManager() instanceof SimpleReloadableResourceManager) {
+            resourceManager = (SimpleReloadableResourceManager) Minecraft.getMinecraft().getResourceManager();
+        } else {
+
+            enabled = false;
+        }
     }
     public static void render(List<Status> statuses, int x, int y, int iconWidth, int iconHeight, int maxWidth, int maxHeight) {
-//        int maxIconsHoriz = 
+        if (!enabled) return;
+//        int maxIconsHoriz =
+
     }
     public static void test(double elapsed) {
 //        textureManager.bindTexture(new ResourceLocation("warlordsbufficons-1.8.9", "textures/gui/league-of-legends/Gangplank_Parrrley_HD.png"));
@@ -40,7 +51,7 @@ public class IconRenderer {
     private static void drawScaledIcon(ResourceLocation texture, double x, double y, double width, double height) {
         GlStateManager.enableTexture2D();
         // get dimensions of png
-        resourceManager 
+        resourceManager.getResource(texture).ge
     }
     private static void drawBorder(double x, double y, double width, double height, int r, int g, int b, int a) {
         WorldRenderer wr = tessellator.getWorldRenderer();
