@@ -17,7 +17,6 @@ public class IconRenderer {
     private static final GuiIngame gui = Minecraft.getMinecraft().ingameGUI;
     private static final TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
     private static final Tessellator tessellator = Tessellator.getInstance();
-    private static final Runtime runtime = Runtime.getRuntime();
     public static void render(List<Status> statuses, int x, int y, int iconWidth, int iconHeight, int maxWidth, int maxHeight) {
 //        int maxIconsHoriz = 
     }
@@ -30,6 +29,9 @@ public class IconRenderer {
         GlStateManager.popMatrix();
         drawClockRect(150, 50, 256, 256, elapsed, 0, 0, 0, 120, 255, 255, 255, 255);
         drawBorder(150, 50, 256, 256, 255, 0, 0, 255);
+    }
+    private static void drawScaledIcon(double x, double y, double width, double height) {
+        
     }
     private static void drawBorder(double x, double y, double width, double height, int r, int g, int b, int a) {
         WorldRenderer wr = tessellator.getWorldRenderer();
