@@ -6,9 +6,12 @@ import com.aquamancer.warlordsbufficons.statuses.StatusFactory;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import org.spongepowered.asm.mixin.Unique;
 
 @Mod(modid = "warlordsbufficons", useMetadata=true)
 public class WarlordsBuffIcons {
+    public static boolean enabled;
+    public static boolean chatDependencyEnabled;
     @Mod.EventHandler
     public void init(FMLInitializationEvent event) {
         MinecraftForge.EVENT_BUS.register(new RenderGameOverlayEventHandler());

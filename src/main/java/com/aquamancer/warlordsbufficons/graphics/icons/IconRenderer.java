@@ -8,6 +8,8 @@ import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
+import net.minecraft.client.resources.IResourceManager;
+import net.minecraft.client.resources.SimpleReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
@@ -17,6 +19,11 @@ public class IconRenderer {
     private static final GuiIngame gui = Minecraft.getMinecraft().ingameGUI;
     private static final TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
     private static final Tessellator tessellator = Tessellator.getInstance();
+    private static SimpleReloadableResourceManager resourceManager;
+    
+    public static void init() {
+        
+    }
     public static void render(List<Status> statuses, int x, int y, int iconWidth, int iconHeight, int maxWidth, int maxHeight) {
 //        int maxIconsHoriz = 
     }
@@ -30,8 +37,10 @@ public class IconRenderer {
         drawClockRect(150, 50, 256, 256, elapsed, 0, 0, 0, 120, 255, 255, 255, 255);
         drawBorder(150, 50, 256, 256, 255, 0, 0, 255);
     }
-    private static void drawScaledIcon(double x, double y, double width, double height) {
-        
+    private static void drawScaledIcon(ResourceLocation texture, double x, double y, double width, double height) {
+        GlStateManager.enableTexture2D();
+        // get dimensions of png
+        resourceManager 
     }
     private static void drawBorder(double x, double y, double width, double height, int r, int g, int b, int a) {
         WorldRenderer wr = tessellator.getWorldRenderer();
