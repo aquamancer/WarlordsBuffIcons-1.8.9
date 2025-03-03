@@ -22,6 +22,7 @@ public class Status {
     // millis
     private int initialDuration;
     private int remainingDuration;
+    private double elapsed;
 
     /**
      * Because of upgrades, not every status's initial duration is universal. So, to get the most accurate prediction
@@ -47,10 +48,13 @@ public class Status {
      *      - initial duration logging
      * stacking info
      */
-    private Status() {
+    private Status(int initialDuration) {
         this.timeAddedMillis = Minecraft.getSystemTime();
         this.hasExperimentalDurationBeenLogged = false;
         this.isUnrecognized = false;
+        this.initialDuration = initialDuration;
+        this.remainingDuration = initialDuration;
+        this.elapsed = 0;
     }
 
     /**
@@ -63,24 +67,21 @@ public class Status {
         this.hasExperimentalDurationBeenLogged = false;
         this.initialDuration = initialDuration;
         this.remainingDuration = initialDuration;
+        this.elapsed = 0;
         this.initialDisplayedDuration = initialDisplayedDuration;
         
         this.isUnrecognized = true;
     }
     protected Status(String universalName, int initialDuration, JsonObject jsonData) {
-        this();
+        this(initialDuration);
         this.universalName = universalName;
-        this.initialDuration = initialDuration;
-        this.remainingDuration = initialDuration;
     }
     protected Status(String universalName, int initialDuration, int initialDisplayedDuration, JsonObject jsonData) {
-        this();
+        this(initialDuration);
         // todo handle jsonData = null (unrecognized status)
         this.universalName = universalName;
         this.initialDisplayedDuration = initialDisplayedDuration;
         this.displayedDuration = initialDisplayedDuration;
-        this.initialDuration = initialDuration;
-        this.remainingDuration = initialDuration;
         // todo parse json, create fields, fill fields
     }
 
@@ -143,6 +144,10 @@ public class Status {
     }
     public boolean hasExperimentalDurationBeenLogged() {
         return hasExperimentalDurationBeenLogged;
+    }
+    public void timePassed(int millis) {
+        this.remainingDuration -= millis;
+        this.elapsed = (this.initialDuration - this.remainingDuration) / (double) this.initialDuration;
     }
 }
 

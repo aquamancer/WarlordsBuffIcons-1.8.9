@@ -153,6 +153,14 @@ public class Statuses {
             MedianTracker.updateMedianTracker(totalDuration, removed.getUniversalName(), this.experimentalDurations);
         }
     }
+    public void tickAllDurationsDown(int millis) {
+        for (Status buff : this.buffs) {
+            buff.timePassed(millis);
+        }
+        for (Status debuff : this.debuffs) {
+            debuff.timePassed(millis);
+        }
+    }
     public void clearPrematureStatuses() {
         this.prematureStatuses.clear();
     }

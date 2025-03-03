@@ -105,4 +105,7 @@ public class StatusController {
         }
         previousActionBar = recentActionBar;
     }
+    public static Statuses getStatuses() {
+        return statuses;
+    }
 }
