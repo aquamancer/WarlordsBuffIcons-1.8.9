@@ -4,4 +4,5 @@ run/
 build/
 .gradle/
 
-src/main/resources/assets/warlordsbufficons-1.8.9/textures/gui/
+src/main/resources/assets/warlordsbufficons-1.8.9/textures/gui/**
+!src/main/resources/assets/warlordsbufficons-1.8.9/textures/gui/.gitkeep

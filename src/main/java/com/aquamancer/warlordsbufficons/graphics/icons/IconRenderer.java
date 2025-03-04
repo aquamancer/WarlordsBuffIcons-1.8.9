@@ -15,12 +15,16 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 import java.util.List;
 
 public class IconRenderer {
     public static boolean enabled = true;
+    private static final Minecraft minecraft = Minecraft.getMinecraft();
     private static final Logger LOGGER = LogManager.getLogger(IconRenderer.class);
-    private static final GuiIngame gui = Minecraft.getMinecraft().ingameGUI;
+    private static GuiIngame gui;
     private static final TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
     private static final Tessellator tessellator = Tessellator.getInstance();
     private static SimpleReloadableResourceManager resourceManager;
@@ -28,8 +32,9 @@ public class IconRenderer {
     public static void init() {
         if (Minecraft.getMinecraft().getResourceManager() instanceof SimpleReloadableResourceManager) {
             resourceManager = (SimpleReloadableResourceManager) Minecraft.getMinecraft().getResourceManager();
+            gui = minecraft.ingameGUI;
         } else {
-
+            LOGGER.error("resource manager is not of type SimpleReloadableResourceManager");
             enabled = false;
         }
     }
@@ -40,18 +45,37 @@ public class IconRenderer {
     }
     public static void test(double elapsed) {
 //        textureManager.bindTexture(new ResourceLocation("warlordsbufficons-1.8.9", "textures/gui/league-of-legends/Gangplank_Parrrley_HD.png"));
-        textureManager.bindTexture(new ResourceLocation("warlordsbufficons-1.8.9", "textures/gui/league-of-legends/240px-Fizz_Chum_the_Waters_HD.png"));
-        GlStateManager.pushMatrix();
-        GlStateManager.scale(256/96f,  256/96f, 0);
-        gui.drawTexturedModalRect(150 * 96/256f, 50 * 96/256f, 0, 0, 96, 96);
-        GlStateManager.popMatrix();
-        drawClockRect(150, 50, 256, 256, elapsed, 0, 0, 0, 120, 255, 255, 255, 255);
+        ResourceLocation fizz = new ResourceLocation("warlordsbufficons-1.8.9", "textures/gui/Yone_Spirit_Cleave_HD.png");
+        drawScaledIcon2D(fizz, 150f, 50f, 30, 30);
+        drawClockRect(150, 50, 30, 30, elapsed, 0, 0, 0, 120, 255, 255, 255, 255);
         drawBorder(150, 50, 256, 256, 255, 0, 0, 255);
     }
-    private static void drawScaledIcon(ResourceLocation texture, double x, double y, double width, double height) {
+    private static void drawScaledIcon2D(ResourceLocation texture, float x, float y, float width, float height) {
+        if (gui == null) {
+            LOGGER.error("gui is null");
+            gui = minecraft.ingameGUI;
+        }
         GlStateManager.enableTexture2D();
         // get dimensions of png
-        resourceManager.getResource(texture).ge
+        try {
+            BufferedImage icon = ImageIO.read(resourceManager.getResource(texture).getInputStream());
+            int iconHeight = icon.getHeight();
+            int iconWidth = icon.getWidth();
+            float scaledHeight = height / iconHeight;
+            float scaledWidth = width / iconWidth;
+            float scaledX = x / scaledWidth;
+            float scaledY = y / scaledHeight;
+
+            textureManager.bindTexture(texture);
+            GlStateManager.pushMatrix();
+            GlStateManager.enableTexture2D();
+            GlStateManager.scale(scaledWidth, scaledHeight, 0);
+//            gui.drawTexturedModalRect(scaledX, scaledY, 0, 0, iconWidth, iconHeight);
+            gui.drawTexturedModalRect((int) scaledX, (int) scaledY, 0, 0, iconWidth, iconHeight);
+            GlStateManager.popMatrix();
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
     }
     private static void drawBorder(double x, double y, double width, double height, int r, int g, int b, int a) {
         WorldRenderer wr = tessellator.getWorldRenderer();
