@@ -3,10 +3,7 @@ package com.aquamancer.warlordsbufficons;
 import com.google.gson.*;
 import com.google.gson.stream.MalformedJsonException;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.FileResourcePack;
-import net.minecraft.client.resources.FolderResourcePack;
-import net.minecraft.client.resources.IResourceManager;
-import net.minecraft.client.resources.SimpleReloadableResourceManager;
+import net.minecraft.client.resources.*;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -17,6 +14,8 @@ import java.net.URISyntaxException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FileManager {
     private static final Logger LOGGER = LogManager.getLogger(FileManager.class);
