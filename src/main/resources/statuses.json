@@ -3,20 +3,22 @@
     "custom": false,
     "actionBarName": "WARP",
     "enabled": true,
-    "type": "buff",
-    "border": "green",
-    "iconPath": "textures/gui/league-of-legends/Alistar_Headbutt_HD.png",
+    "isDebuff": false,
+    "borderRGBA": [0, 255, 0, 255],
+    "iconPath": "textures/gui/league-of-legends/Alistar_Headbutt_HD1.png",
     "manualInitialDuration": -1,
     "experimentalInitialDuration": -1,
     "priority": 0
   },
   "chainLightning": {
+    "custom": false,
     "actionBarName": "CHAIN",
     "enabled": true,
-    "type": "buff",
-    "border": "green",
-    "iconPath": "foo.png",
-    "staticInitialDuration": -1,
+    "isDebuff": false,
+    "borderRGBA": [0, 255, 0, 255],
+    "iconPath": "textures/gui/league-of-legends/Yone_Spirit_Cleave_HD.png",
+    "manualInitialDuration": -1,
+    "experimentalInitialDuration": -1,
     "priority": 0
   }
 }

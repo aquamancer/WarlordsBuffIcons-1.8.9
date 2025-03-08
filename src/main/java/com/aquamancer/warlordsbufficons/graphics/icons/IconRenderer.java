@@ -46,6 +46,7 @@ public class IconRenderer {
         int maxRows = maxHeight / iconHeight;
 
         for (int i = 0; i < statuses.size(); i++) {
+            Status status = statuses.get(i);
             int row = i / maxCols;
             int col = i % maxCols;
             int x1 = x + iconWidth * col; // columns stack to the right
@@ -56,9 +57,10 @@ public class IconRenderer {
             } else if (i > maxCols * maxRows) {
                 return;
             } else {
+                int[] borderRGBA = statuses.getBorderRGBA();
                 // todo Status icon type check
-                drawScaledIcon2D(FileManager.getTextures().get(statuses.get(i).getUniversalName()), x1, y1, iconWidth, iconHeight);
-                drawClockRect(x1, y1, iconWidth, iconHeight, statuses.get(i).getElapsed(), 0, 0, 0, 120, 255, 255, 255, 255);
+                drawScaledIcon2D(FileManager.getTextures().get(status.getUniversalName()), x1, y1, iconWidth, iconHeight);
+                drawClockRect(x1, y1, iconWidth, iconHeight, status.getElapsed(), 0, 0, 0, 120, 255, 255, 255, 255);
                 // todo border color check
                 drawBorder(x1, y1, iconWidth, iconHeight, 0, 255, 0, 255);
             }

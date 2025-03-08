@@ -1,0 +1,9 @@
+custom: boolean = status that is guaranteed to not be reflected by the action bar
+actionBarName: string = exact name displayed by the action bar that represents this status. will be ignored if custom = true (verify)
+enabled: boolean = should this status be replaced with an icon?
+isDebuff: boolean = should the icon be grouped with the debuffs or buffs?
+borderRGBA: int[4] = RGBA values for the icon's border
+iconPath: string = relative path from mcDataDir/config/warlordsbufficons-1.8.9/assets/warlordsbufficons-1.8.9/ to the icon PNG
+manualInitialDuration: int (millis) = set the icon's initial duration. -1 to use built-in functionality to determine the precise initial duration
+experimentalInitialDuration: int (millis) = this value should not be modified. its value is controlled by the mod. it represents the median initial durations throughout the previous runtime
+priority: int = priority for the order of this status when there are multiple icons. lower value = higher priority
