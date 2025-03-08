@@ -1,5 +1,6 @@
 package com.aquamancer.warlordsbufficons.graphics.icons;
 
+import com.aquamancer.warlordsbufficons.FileManager;
 import com.aquamancer.warlordsbufficons.statuses.Status;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngame;
@@ -9,17 +10,12 @@ import net.minecraft.client.renderer.WorldRenderer;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
-import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.client.resources.SimpleReloadableResourceManager;
 import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 
 public class IconRenderer {
@@ -30,20 +26,12 @@ public class IconRenderer {
     private static final TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
     private static final Tessellator tessellator = Tessellator.getInstance();
     private static SimpleReloadableResourceManager resourceManager;
+    private static final int DEFAULT_TEXTURE_SIZE = 256; // minecraft texture bind automatic rescaling px
     
     // todo delete this
-    private static BufferedImage yonew;
-    private static DynamicTexture yonewTex;
     public static void init() {
         if (Minecraft.getMinecraft().getResourceManager() instanceof SimpleReloadableResourceManager) {
             resourceManager = (SimpleReloadableResourceManager) Minecraft.getMinecraft().getResourceManager();
-            // todo delete this
-            try {
-                yonew = ImageIO.read(new File(Minecraft.getMinecraft().mcDataDir, "config/warlordsbufficons-1.8.9/assets/warlordsbufficons-1.8.9/textures/gui/league-of-legends/Yone_Spirit_Cleave_HD.png"));
-                yonewTex = new DynamicTexture(yonew);
-            } catch (IOException ex) {
-                
-            }
         } else {
             LOGGER.error("resource manager is not of type SimpleReloadableResourceManager");
             enabled = false;
@@ -51,39 +39,48 @@ public class IconRenderer {
     }
     public static void render(List<Status> statuses, int x, int y, int iconWidth, int iconHeight, int maxWidth, int maxHeight) {
         if (!enabled) return;
-        if (gui == null) {
-            gui = minecraft.ingameGUI;
-        }
-//        int maxIconsHoriz =
+        if (gui == null) gui = minecraft.ingameGUI;
 
+        // todo handle if icons go off the screen?
+        int maxCols = maxWidth / iconWidth;
+        int maxRows = maxHeight / iconHeight;
+
+        for (int i = 0; i < statuses.size(); i++) {
+            int row = i / maxCols;
+            int col = i % maxCols;
+            int x1 = x + iconWidth * col; // columns stack to the right
+            int y1 = y - iconHeight * row; // rows stack upwards
+            if (i == maxCols * maxRows) {
+                // todo finish this truncation (+x icon)
+                return;
+            } else if (i > maxCols * maxRows) {
+                return;
+            } else {
+                // todo Status icon type check
+                drawScaledIcon2D(FileManager.getTextures().get(statuses.get(i).getUniversalName()), x1, y1, iconWidth, iconHeight);
+                drawClockRect(x1, y1, iconWidth, iconHeight, statuses.get(i).getElapsed(), 0, 0, 0, 120, 255, 255, 255, 255);
+                // todo border color check
+                drawBorder(x1, y1, iconWidth, iconHeight, 0, 255, 0, 255);
+            }
+        }
     }
     public static void test(double elapsed) {
         if (gui == null) {
             gui = minecraft.ingameGUI;
         }
-//        ResourceLocation gpq = new ResourceLocation("warlordsbufficons-1.8.9", "textures/gui/league-of-legends/Gangplank_Parrrley_HD.png");
-//        ResourceLocation f = new ResourceLocation("warlordsbufficons-1.8.9", "textures/gui/league-of-legends/240px-Fizz_Chum_the_Waters_HD.png");
-//        ResourceLocation yonew = new ResourceLocation("warlordsbufficons-1.8.9", "textures/gui/league-of-legends/Yone_Spirit_Cleave_HDdf.png");
-        drawScaledIcon2D(yonew, 150f, 50f, 30, 30);
+        drawScaledIcon2D(FileManager.getTextures().get("timeWarp"), 150, 50, 30, 30);
         drawClockRect(150, 50, 30, 30, elapsed, 0, 0, 0, 120, 255, 255, 255, 255);
         drawBorder(150, 50, 256, 256, 255, 0, 0, 255);
     }
-    private static void drawScaledIcon2D(BufferedImage icon, float x, float y, float width, float height) {
-        GlStateManager.enableTexture2D();
-        // get dimensions of png
-        int iconHeight = icon.getHeight();
-        int iconWidth = icon.getWidth();
-        float scaledHeight = height / iconHeight;
-        float scaledWidth = width / iconWidth;
-        float scaledX = x / scaledWidth;
-        float scaledY = y / scaledHeight;
-
-        textureManager.bindTexture(textureManager.getDynamicTextureLocation("icon", yonewTex));
+    private static void drawScaledIcon2D(ResourceLocation icon, int x, int y, float width, float height) {
+        if (icon == null) return;
+        textureManager.bindTexture(icon);
         GlStateManager.pushMatrix();
         GlStateManager.enableTexture2D();
-        GlStateManager.scale(scaledWidth, scaledHeight, 0);
+        GlStateManager.translate(x, y, 0);
+        GlStateManager.scale(width / DEFAULT_TEXTURE_SIZE, height / DEFAULT_TEXTURE_SIZE, 1);
 //            gui.drawTexturedModalRect(scaledX, scaledY, 0, 0, iconWidth, iconHeight);
-        gui.drawTexturedModalRect((int) scaledX, (int) scaledY, 0, 0, iconWidth, iconHeight);
+        gui.drawTexturedModalRect(0, 0, 0, 0, DEFAULT_TEXTURE_SIZE, DEFAULT_TEXTURE_SIZE);
         GlStateManager.popMatrix();
     }
     private static void drawBorder(double x, double y, double width, double height, int r, int g, int b, int a) {

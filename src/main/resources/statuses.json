@@ -5,7 +5,7 @@
     "enabled": true,
     "type": "buff",
     "border": "green",
-    "icon": "foo.png",
+    "iconPath": "textures/gui/league-of-legends/Alistar_Headbutt_HD.png",
     "manualInitialDuration": -1,
     "experimentalInitialDuration": -1,
     "priority": 0
@@ -15,7 +15,7 @@
     "enabled": true,
     "type": "buff",
     "border": "green",
-    "icon": "foo.png",
+    "iconPath": "foo.png",
     "staticInitialDuration": -1,
     "priority": 0
   }

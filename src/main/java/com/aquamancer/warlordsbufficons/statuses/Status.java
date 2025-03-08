@@ -118,6 +118,16 @@ public class Status {
     public long getRemainingDuration() {
         return remainingDuration;
     }
+    // todo remove after testing
+    public void setRemainingDuration(int millis) {
+        if (millis > this.initialDuration) {
+            this.initialDuration = millis;
+        }
+        this.remainingDuration = millis;
+    }
+    public int getInitialDuration() {
+        return this.initialDuration;
+    }
     public int getDisplayedDuration() {
         return this.displayedDuration;
     }
@@ -129,6 +139,9 @@ public class Status {
     }
     public long getTimeAddedMillis() {
         return this.timeAddedMillis;
+    }
+    public double getElapsed() {
+        return this.elapsed;
     }
     public String getUniversalName() {
         return this.universalName;

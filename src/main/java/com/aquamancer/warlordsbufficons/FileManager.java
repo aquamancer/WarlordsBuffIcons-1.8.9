@@ -3,23 +3,31 @@ package com.aquamancer.warlordsbufficons;
 import com.google.gson.*;
 import com.google.gson.stream.MalformedJsonException;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.*;
+import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URISyntaxException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.Files;
 import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class FileManager {
     private static final Logger LOGGER = LogManager.getLogger(FileManager.class);
     private static final ClassLoader classLoader = FileManager.class.getClassLoader();
+
 
     private static final File MC_CONFIG_DIR = new File(Minecraft.getMinecraft().mcDataDir, "config");
     private static final File ROOT_DIR = new File(MC_CONFIG_DIR,"warlordsbufficons-1.8.9");
@@ -43,11 +51,16 @@ public class FileManager {
     private static JsonObject statuses;
     private static JsonObject config;
 
+    private static TextureManager textureManager;
+    private static Map<String, ResourceLocation> textures;
+
     public static void init() {
         JsonParser parser = new JsonParser();
         defaultChatIdentifiers = parser.parse(new InputStreamReader(classLoader.getResourceAsStream("chat-identifiers.json"))).getAsJsonObject();
         defaultStatuses = parser.parse(new InputStreamReader(classLoader.getResourceAsStream("statuses.json"))).getAsJsonObject();
         defaultConfig = parser.parse(new InputStreamReader(classLoader.getResourceAsStream("config.json"))).getAsJsonObject();
+
+        textureManager = Minecraft.getMinecraft().getTextureManager();
         
         boolean firstLaunch = !ROOT_DIR.exists() || !ROOT_DIR.isDirectory();
         
@@ -151,16 +164,24 @@ public class FileManager {
             try {
                 FileUtils.copyDirectory(new File(classLoader.getResource("assets/warlordsbufficons-1.8.9").toURI()), RESOURCE_DIR);
             } catch (IOException | URISyntaxException | NullPointerException ex) {
-                LOGGER.error("could not copy resource pack from resources to .minecraft filesystem.");
+                LOGGER.error("could not copy resources to .minecraft filesystem.");
                 return;
             }
         }
-        FolderResourcePack resourcePack = new FolderResourcePack(RESOURCE_DIR);
-        IResourceManager resourceManager = Minecraft.getMinecraft().getResourceManager();
-        if (resourceManager instanceof SimpleReloadableResourceManager) {
-            ((SimpleReloadableResourceManager) resourceManager).reloadResourcePack(resourcePack);
-        } else {
-            LOGGER.error("resourceManager is not an instance of SimpleReloadableResourceManager. Couldn't load resource pack.");
+        textures = new HashMap<>();
+        // todo lazy loading option for bufferedimages
+        for (Map.Entry<String, JsonElement> status : statuses.entrySet()) {
+            JsonObject data = status.getValue().getAsJsonObject();
+            if (data.get("enabled").getAsBoolean()) {
+                String iconPath = data.get("iconPath").getAsString();
+                try {
+                    BufferedImage image = ImageIO.read(new File(RESOURCE_DIR, iconPath));
+                    ResourceLocation texture = textureManager.getDynamicTextureLocation(status.getKey(), new DynamicTexture(image));
+                    textures.put(status.getKey(), texture);
+                } catch (Exception ex) {
+                    LOGGER.warn("error loading icon: {}. verify the file exists.", iconPath);
+                }
+            }
         }
     }
     @Nullable
@@ -189,5 +210,8 @@ public class FileManager {
 
     public static JsonObject getDefaultChatIdentifiers() {
         return defaultChatIdentifiers;
+    }
+    public static Map<String, ResourceLocation> getTextures() {
+        return textures;
     }
 }
