@@ -12,8 +12,12 @@ public class Status {
     private static int DISCREPANCY_THRESHOLD_TO_SYNC = 250;
     private static int RECOVERY_BUFFER = 150;
     private String universalName;
-    private boolean isDebuff, iconEnabled, isCustom;
-    private Color border;
+
+    /*
+     * Fields from statuses.json
+     */
+    boolean isDebuff, iconEnabled, isCustom;
+    int[] borderRGBA;
     /*
      * Custom fields for runtime
      */
@@ -48,13 +52,25 @@ public class Status {
      *      - initial duration logging
      * stacking info
      */
-    private Status(int initialDuration) {
+    private Status(int initialDuration, JsonObject jsonData) {
         this.timeAddedMillis = Minecraft.getSystemTime();
         this.hasExperimentalDurationBeenLogged = false;
         this.isUnrecognized = false;
         this.initialDuration = initialDuration;
         this.remainingDuration = initialDuration;
         this.elapsed = 0;
+        // parse json
+        this.isDebuff = jsonData.get("isDebuff").getAsBoolean();
+        this.iconEnabled = jsonData.get("enabled").getAsBoolean();
+        this.isCustom = jsonData.get("custom").getAsBoolean();
+        this.borderRGBA = new int[4];
+        for (int i = 0; i < 4; i++) {
+            try {
+                this.borderRGBA[i] = jsonData.get("borderRGBA").getAsInt();
+            } catch (RuntimeException ex) {
+                this.borderRGBA[i] = 0;
+            }
+        }
     }
 
     /**
@@ -73,11 +89,11 @@ public class Status {
         this.isUnrecognized = true;
     }
     protected Status(String universalName, int initialDuration, JsonObject jsonData) {
-        this(initialDuration);
+        this(initialDuration, jsonData);
         this.universalName = universalName;
     }
     protected Status(String universalName, int initialDuration, int initialDisplayedDuration, JsonObject jsonData) {
-        this(initialDuration);
+        this(initialDuration, jsonData);
         // todo handle jsonData = null (unrecognized status)
         this.universalName = universalName;
         this.initialDisplayedDuration = initialDisplayedDuration;
@@ -145,6 +161,9 @@ public class Status {
     }
     public String getUniversalName() {
         return this.universalName;
+    }
+    public int[] getBorderRGBA() {
+        return this.borderRGBA;
     }
     public boolean isDebuff() {
         return this.isDebuff;

@@ -1,14 +1,11 @@
 package com.aquamancer.warlordsbufficons.handlers;
 
-import com.aquamancer.warlordsbufficons.StatusController;
-import com.aquamancer.warlordsbufficons.graphics.icons.IconRenderer;
+import com.aquamancer.warlordsbufficons.graphics.IconRenderer;
 import com.aquamancer.warlordsbufficons.statuses.Status;
 import com.aquamancer.warlordsbufficons.statuses.StatusFactory;
 import net.minecraft.client.Minecraft;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,6 @@
 {
   "chatIdentifiers": "chat-identifiers.json",
-  "statuses": "statuses.json"
+  "statuses": "statuses.json",
+  "handRGBA": [255, 255, 255, 255],
+  "iconOverlayRGBA": [0, 0, 0, 150]
 }

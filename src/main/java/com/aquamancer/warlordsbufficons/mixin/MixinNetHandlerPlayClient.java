@@ -4,7 +4,6 @@ import com.aquamancer.warlordsbufficons.FileManager;
 import com.aquamancer.warlordsbufficons.StatusController;
 import com.aquamancer.warlordsbufficons.chat.ChatAbilityIdentifiers;
 import com.aquamancer.warlordsbufficons.chat.ChatUtils;
-import com.aquamancer.warlordsbufficons.graphics.icons.IconRenderer;
 import net.minecraft.client.network.NetHandlerPlayClient;
 import net.minecraft.network.play.server.S02PacketChat;
 import net.minecraft.util.IChatComponent;

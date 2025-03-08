@@ -1,13 +1,13 @@
-package com.aquamancer.warlordsbufficons.graphics.icons;
+package com.aquamancer.warlordsbufficons.graphics;
 
 import com.aquamancer.warlordsbufficons.FileManager;
 import com.aquamancer.warlordsbufficons.statuses.Status;
+import com.google.gson.JsonArray;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.WorldRenderer;
-import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.client.resources.SimpleReloadableResourceManager;
@@ -57,12 +57,13 @@ public class IconRenderer {
             } else if (i > maxCols * maxRows) {
                 return;
             } else {
-                int[] borderRGBA = statuses.getBorderRGBA();
+                int[] borderRGBA = status.getBorderRGBA();
+
                 // todo Status icon type check
                 drawScaledIcon2D(FileManager.getTextures().get(status.getUniversalName()), x1, y1, iconWidth, iconHeight);
                 drawClockRect(x1, y1, iconWidth, iconHeight, status.getElapsed(), 0, 0, 0, 120, 255, 255, 255, 255);
                 // todo border color check
-                drawBorder(x1, y1, iconWidth, iconHeight, 0, 255, 0, 255);
+                drawBorder(x1, y1, iconWidth, iconHeight, borderRGBA[0], borderRGBA[1], borderRGBA[2], borderRGBA[3]);
             }
         }
     }

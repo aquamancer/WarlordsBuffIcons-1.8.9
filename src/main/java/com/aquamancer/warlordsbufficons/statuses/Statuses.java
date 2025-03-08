@@ -7,10 +7,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * All isDebuff parameters refer to "is debuff according to the action bar." This is needed to determine
- * which mirrored list to insert the status to.
- */
 public class Statuses {
     /**
      * "master" list that tracks all statuses on the player.
