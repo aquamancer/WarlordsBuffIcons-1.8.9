@@ -38,7 +38,7 @@ public class FileManager {
      * Files to copy from resources to mod folder on the first program execution.
      */
     // todo copy directory instead
-    private static final String[] STATUSES_PRESETS = new String[] {};
+    private static final String[] STATUSES_PRESETS = new String[]{};
 
     private static JsonObject defaultChatIdentifiers;
     private static JsonObject defaultStatuses;
