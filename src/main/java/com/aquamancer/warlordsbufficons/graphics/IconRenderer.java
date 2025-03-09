@@ -57,10 +57,11 @@ public class IconRenderer {
                 return;
             } else {
                 int[] borderRGBA = status.getBorderRGBA();
-
+                int[] handRGBA = FileManager.getHandRGBA();
+                int[] iconOverlayRGBA = FileManager.getIconOverlayRGBA();
                 // todo Status icon type check
                 drawScaledIcon2D(FileManager.getTextures().get(status.getUniversalName()), x1, y1, iconWidth, iconHeight);
-                drawClockRect(x1, y1, iconWidth, iconHeight, status.getElapsed(), 0, 0, 0, 120, 255, 255, 255, 255);
+                drawClockRect(x1, y1, iconWidth, iconHeight, status.getElapsed(), iconOverlayRGBA[0], iconOverlayRGBA[1], iconOverlayRGBA[2], iconOverlayRGBA[3], handRGBA[0], handRGBA[1], handRGBA[2], handRGBA[3]);
                 // todo border color check
                 drawBorder(x1, y1, iconWidth, iconHeight, borderRGBA[0], borderRGBA[1], borderRGBA[2], borderRGBA[3]);
             }

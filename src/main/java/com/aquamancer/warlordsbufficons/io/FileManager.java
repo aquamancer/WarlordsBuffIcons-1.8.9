@@ -46,7 +46,11 @@ public class FileManager {
     
     private static JsonObject chatIdentifiers;
     private static JsonObject statuses;
+    /*
+     * Config fields
+     */
     private static JsonObject config;
+    private static int[] handRGBA, iconOverlayRGBA;
 
     private static TextureManager textureManager;
     private static Map<String, ResourceLocation> textures;
@@ -103,6 +107,8 @@ public class FileManager {
                 LOGGER.error("failed copying and overwriting the default config file.");
             }
         }
+        handRGBA = GsonUtils.getIntArray(config, "handRGBA", new int[]{255, 255, 255, 255});
+        iconOverlayRGBA = GsonUtils.getIntArray(config, "iconOverlayRGBA", new int[]{0, 0, 0, 150});
     }
     private static void loadChatIdentifiersFile(JsonParser parser) {
         try (BufferedReader chatIdentifiersReader = new BufferedReader(new FileReader(new File(CONFIG_DIR, config.get("chatIdentifiers").getAsString())))) {
@@ -193,6 +199,15 @@ public class FileManager {
     public static JsonObject getConfig() {
         return config;
     }
+
+    public static int[] getHandRGBA() {
+        return handRGBA;
+    }
+
+    public static int[] getIconOverlayRGBA() {
+        return iconOverlayRGBA;
+    }
+
     public static File getAssetsDir() {
         return ASSETS_DIR;
     }
