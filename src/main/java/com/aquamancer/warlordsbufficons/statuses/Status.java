@@ -97,11 +97,9 @@ public class Status {
     }
     protected Status(String universalName, int initialDuration, int initialDisplayedDuration, boolean isDebuff, boolean iconEnabled, boolean isCustom, int[] borderRGBA) {
         this(initialDuration, isDebuff, iconEnabled, isCustom, borderRGBA);
-        // todo handle jsonData = null (unrecognized status)
         this.universalName = universalName;
         this.initialDisplayedDuration = initialDisplayedDuration;
         this.displayedDuration = initialDisplayedDuration;
-        // todo parse json, create fields, fill fields
     }
 
     /**

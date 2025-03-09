@@ -19,7 +19,6 @@ public class WarlordsBuffIcons {
         FileManager.init();
         ChatAbilityIdentifiers.init();
         StatusFactory.init();
-        IconRenderer.init();
         // todo for testing only
         RenderGameOverlayEventHandler.init();
     }

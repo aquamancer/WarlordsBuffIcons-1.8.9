@@ -75,7 +75,6 @@ public class StatusController {
      * in this packet and are in the same index (after removals) will have their durations synced.
      * @param bar 
      */
-    // todo how do we handle status name not recognized. need to maintain mirrored order no matter what
     public static void onActionBarPacketReceived(IChatComponent bar) {
         ActionBarStatuses recentActionBar = parseStatusesFromActionBar(bar);
         

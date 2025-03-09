@@ -24,18 +24,8 @@ public class IconRenderer {
     private static GuiIngame gui;
     private static final TextureManager textureManager = Minecraft.getMinecraft().getTextureManager();
     private static final Tessellator tessellator = Tessellator.getInstance();
-    private static SimpleReloadableResourceManager resourceManager;
     private static final int DEFAULT_TEXTURE_SIZE = 256; // minecraft texture bind automatic rescaling px
     
-    // todo delete this
-    public static void init() {
-        if (Minecraft.getMinecraft().getResourceManager() instanceof SimpleReloadableResourceManager) {
-            resourceManager = (SimpleReloadableResourceManager) Minecraft.getMinecraft().getResourceManager();
-        } else {
-            LOGGER.error("resource manager is not of type SimpleReloadableResourceManager");
-            enabled = false;
-        }
-    }
     public static void render(List<Status> statuses, int x, int y, int iconWidth, int iconHeight, int maxWidth, int maxHeight) {
         if (!enabled) return;
         if (gui == null) gui = minecraft.ingameGUI;
@@ -59,21 +49,11 @@ public class IconRenderer {
                 int[] borderRGBA = status.getBorderRGBA();
                 int[] handRGBA = FileManager.getHandRGBA();
                 int[] iconOverlayRGBA = FileManager.getIconOverlayRGBA();
-                // todo Status icon type check
                 drawScaledIcon2D(FileManager.getTextures().get(status.getUniversalName()), x1, y1, iconWidth, iconHeight);
                 drawClockRect(x1, y1, iconWidth, iconHeight, status.getElapsed(), iconOverlayRGBA[0], iconOverlayRGBA[1], iconOverlayRGBA[2], iconOverlayRGBA[3], handRGBA[0], handRGBA[1], handRGBA[2], handRGBA[3]);
-                // todo border color check
                 drawBorder(x1, y1, iconWidth, iconHeight, borderRGBA[0], borderRGBA[1], borderRGBA[2], borderRGBA[3]);
             }
         }
-    }
-    public static void test(double elapsed) {
-        if (gui == null) {
-            gui = minecraft.ingameGUI;
-        }
-        drawScaledIcon2D(FileManager.getTextures().get("timeWarp"), 150, 50, 30, 30);
-        drawClockRect(150, 50, 30, 30, elapsed, 0, 0, 0, 120, 255, 255, 255, 255);
-        drawBorder(150, 50, 256, 256, 255, 0, 0, 255);
     }
     private static void drawScaledIcon2D(ResourceLocation icon, int x, int y, float width, float height) {
         if (icon == null) return;

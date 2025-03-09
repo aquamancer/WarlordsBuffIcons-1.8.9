@@ -4,10 +4,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 public class GsonUtils {
     public static boolean getBoolean(JsonObject data, String key, boolean defaultValue) {
         return (data != null && data.has(key) && data.get(key).isJsonPrimitive() && data.get(key).getAsJsonPrimitive().isBoolean())
