@@ -3,6 +3,7 @@ package com.aquamancer.warlordsbufficons;
 import com.aquamancer.warlordsbufficons.chat.ChatAbilityIdentifiers;
 import com.aquamancer.warlordsbufficons.graphics.IconRenderer;
 import com.aquamancer.warlordsbufficons.handlers.RenderGameOverlayEventHandler;
+import com.aquamancer.warlordsbufficons.io.FileManager;
 import com.aquamancer.warlordsbufficons.statuses.StatusFactory;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;

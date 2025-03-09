@@ -1,6 +1,7 @@
 package com.aquamancer.warlordsbufficons.statuses;
 
-import com.aquamancer.warlordsbufficons.FileManager;
+import com.aquamancer.warlordsbufficons.io.FileManager;
+import com.aquamancer.warlordsbufficons.io.GsonUtils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
@@ -35,18 +36,37 @@ public class StatusFactory {
         }
     }
     public static Status createStatusFromUniversalName(String universalName, int initialDuration, int initialDisplayedDuration) {
-        return new Status(universalName, initialDuration, initialDisplayedDuration, fromUniversalName.get(universalName));
+        JsonObject data = fromUniversalName.get(universalName);
+        return new Status(
+                universalName,
+                initialDuration,
+                initialDisplayedDuration,
+                GsonUtils.getBoolean(data, "isDebuff", false),
+                GsonUtils.getBoolean(data, "iconEnabled", true),
+                GsonUtils.getBoolean(data, "custom", false),
+                GsonUtils.getIntArray(data, "borderRGBA", new int[] {0, 255, 0, 255})
+        );
     }
+
     public static Status createStatusFromActionBarName(String actionBarName, int initialDuration, int initialDisplayedDuration) {
-        if (toUniversalName.containsKey(actionBarName)) {
-            return new Status(toUniversalName(actionBarName), initialDuration, initialDisplayedDuration, fromUniversalName.get(toUniversalName(actionBarName)));
+        String universalName = toUniversalName(actionBarName);
+        if (universalName != null) {
+            return createStatusFromUniversalName(universalName, initialDuration, initialDisplayedDuration);
         } else {
             return createUnrecognizedStatus(initialDuration, initialDisplayedDuration);
         }
     }
 
     public static Status createCustomStatusFromUniversalName(String universalName, int initialDuration) {
-        return new Status(universalName, initialDuration, fromUniversalName.get(universalName));
+        JsonObject data = fromUniversalName.get(universalName);
+        return new Status(
+                universalName,
+                initialDuration,
+                GsonUtils.getBoolean(data, "isDebuff", false),
+                GsonUtils.getBoolean(data, "iconEnabled", true),
+                GsonUtils.getBoolean(data, "custom", false),
+                GsonUtils.getIntArray(data, "borderRGBA", new int[] {0, 255, 0, 255})
+        );
     }
 
     /**

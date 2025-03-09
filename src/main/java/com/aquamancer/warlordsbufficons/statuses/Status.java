@@ -52,7 +52,7 @@ public class Status {
      *      - initial duration logging
      * stacking info
      */
-    private Status(int initialDuration, JsonObject jsonData) {
+    private Status(int initialDuration, boolean isDebuff, boolean iconEnabled, boolean isCustom, int[] borderRGBA) {
         this.timeAddedMillis = Minecraft.getSystemTime();
         this.hasExperimentalDurationBeenLogged = false;
         this.isUnrecognized = false;
@@ -60,17 +60,10 @@ public class Status {
         this.remainingDuration = initialDuration;
         this.elapsed = 0;
         // parse json
-        this.isDebuff = jsonData.get("isDebuff").getAsBoolean();
-        this.iconEnabled = jsonData.get("enabled").getAsBoolean();
-        this.isCustom = jsonData.get("custom").getAsBoolean();
-        this.borderRGBA = new int[4];
-        for (int i = 0; i < 4; i++) {
-            try {
-                this.borderRGBA[i] = jsonData.get("borderRGBA").getAsInt();
-            } catch (RuntimeException ex) {
-                this.borderRGBA[i] = 0;
-            }
-        }
+        this.isDebuff = isDebuff;
+        this.iconEnabled = iconEnabled;
+        this.isCustom = isCustom;
+        this.borderRGBA = borderRGBA;
     }
 
     /**
@@ -88,12 +81,22 @@ public class Status {
         
         this.isUnrecognized = true;
     }
-    protected Status(String universalName, int initialDuration, JsonObject jsonData) {
-        this(initialDuration, jsonData);
+
+    /**
+     * Creates a custom/premature Status.
+     * @param universalName
+     * @param initialDuration
+     * @param isDebuff
+     * @param iconEnabled
+     * @param isCustom
+     * @param borderRGBA
+     */
+    protected Status(String universalName, int initialDuration, boolean isDebuff, boolean iconEnabled, boolean isCustom, int[] borderRGBA) {
+        this(initialDuration, isDebuff, iconEnabled, isCustom, borderRGBA);
         this.universalName = universalName;
     }
-    protected Status(String universalName, int initialDuration, int initialDisplayedDuration, JsonObject jsonData) {
-        this(initialDuration, jsonData);
+    protected Status(String universalName, int initialDuration, int initialDisplayedDuration, boolean isDebuff, boolean iconEnabled, boolean isCustom, int[] borderRGBA) {
+        this(initialDuration, isDebuff, iconEnabled, isCustom, borderRGBA);
         // todo handle jsonData = null (unrecognized status)
         this.universalName = universalName;
         this.initialDisplayedDuration = initialDisplayedDuration;

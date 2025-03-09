@@ -1,8 +1,7 @@
 package com.aquamancer.warlordsbufficons.graphics;
 
-import com.aquamancer.warlordsbufficons.FileManager;
+import com.aquamancer.warlordsbufficons.io.FileManager;
 import com.aquamancer.warlordsbufficons.statuses.Status;
-import com.google.gson.JsonArray;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngame;
 import net.minecraft.client.renderer.GlStateManager;

@@ -1,6 +1,6 @@
 package com.aquamancer.warlordsbufficons.chat;
 
-import com.aquamancer.warlordsbufficons.FileManager;
+import com.aquamancer.warlordsbufficons.io.FileManager;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import org.apache.logging.log4j.LogManager;

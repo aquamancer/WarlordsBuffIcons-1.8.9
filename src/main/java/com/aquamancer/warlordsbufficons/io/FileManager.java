@@ -1,11 +1,10 @@
-package com.aquamancer.warlordsbufficons;
+package com.aquamancer.warlordsbufficons.io;
 
 import com.google.gson.*;
 import com.google.gson.stream.MalformedJsonException;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.client.renderer.texture.TextureManager;
-import net.minecraft.client.resources.*;
 import net.minecraft.util.ResourceLocation;
 import org.apache.commons.io.FileUtils;
 import org.apache.logging.log4j.LogManager;

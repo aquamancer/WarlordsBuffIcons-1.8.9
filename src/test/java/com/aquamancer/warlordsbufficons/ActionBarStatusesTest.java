@@ -5,6 +5,9 @@ import java.util.AbstractMap.SimpleEntry;
 
 import com.aquamancer.warlordsbufficons.statuses.ActionBarStatuses;
 import com.aquamancer.warlordsbufficons.statuses.Status;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
 import scala.tools.nsc.interpreter.SimpleMath;

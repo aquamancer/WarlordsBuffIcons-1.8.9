@@ -1,6 +1,6 @@
 package com.aquamancer.warlordsbufficons.mixin;
 
-import com.aquamancer.warlordsbufficons.FileManager;
+import com.aquamancer.warlordsbufficons.io.FileManager;
 import com.aquamancer.warlordsbufficons.StatusController;
 import com.aquamancer.warlordsbufficons.chat.ChatAbilityIdentifiers;
 import com.aquamancer.warlordsbufficons.chat.ChatUtils;
