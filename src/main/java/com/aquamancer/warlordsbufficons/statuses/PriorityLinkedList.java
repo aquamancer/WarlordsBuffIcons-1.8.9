@@ -1,6 +1,8 @@
 package com.aquamancer.warlordsbufficons.statuses;
 
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.*;
 
 public class PriorityLinkedList implements Iterable<Status> {
@@ -62,6 +64,8 @@ public class PriorityLinkedList implements Iterable<Status> {
 
         this.preHead = new Node(null, Integer.MIN_VALUE);
         this.postTail = new Node(null, Integer.MAX_VALUE);
+        this.preHead.next = this.postTail;
+        this.postTail.prev = this.preHead;
         this.priorityTailMap.put(Integer.MIN_VALUE, this.preHead);
         this.priorityTailMap.put(Integer.MAX_VALUE, this.postTail);
         this.priorities.add(Integer.MIN_VALUE);
@@ -109,6 +113,7 @@ public class PriorityLinkedList implements Iterable<Status> {
     }
 
     @Override
+    @NotNull
     public Iterator<Status> iterator() {
         return new PriorityLinkedListIterator();
     }

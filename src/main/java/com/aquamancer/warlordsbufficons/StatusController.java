@@ -89,7 +89,7 @@ public class StatusController {
         for (int i = 0; i < statuses.getMirroredBuffs().size(); i++) {
             statuses.getMirroredBuffs().get(i).sync(recentActionBar.getBuffs().get(i).getValue(), statuses.getExperimentalDurations());
         }
-        statuses.processNewActionBarStatus(addedBuffs, false);
+        statuses.processNewActionBarStatuses(addedBuffs, false);
         
         for (Integer deletedDebuff : deletedDebuffs) {
             statuses.remove(deletedDebuff, true, true);
@@ -97,7 +97,7 @@ public class StatusController {
         for (int i = 0; i < statuses.getMirroredDebuffs().size(); i++) {
             statuses.getMirroredBuffs().get(i).sync(recentActionBar.getDebuffs().get(i).getValue(), statuses.getExperimentalDurations());
         }
-        statuses.processNewActionBarStatus(addedDebuffs, true);
+        statuses.processNewActionBarStatuses(addedDebuffs, true);
         
         if (!recentActionBar.equals(previousActionBar)) {
             statuses.clearPrematureStatuses();

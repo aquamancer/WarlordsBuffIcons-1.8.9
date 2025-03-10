@@ -1,6 +1,7 @@
 package com.aquamancer.warlordsbufficons.graphics;
 
 import com.aquamancer.warlordsbufficons.io.FileManager;
+import com.aquamancer.warlordsbufficons.statuses.PriorityLinkedList;
 import com.aquamancer.warlordsbufficons.statuses.Status;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiIngame;
@@ -15,6 +16,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 
+import java.util.Iterator;
 import java.util.List;
 
 public class IconRenderer {
@@ -26,7 +28,7 @@ public class IconRenderer {
     private static final Tessellator tessellator = Tessellator.getInstance();
     private static final int DEFAULT_TEXTURE_SIZE = 256; // minecraft texture bind automatic rescaling px
     
-    public static void render(List<Status> statuses, int x, int y, int iconWidth, int iconHeight, int maxWidth, int maxHeight) {
+    public static void render(PriorityLinkedList statuses, int x, int y, int iconWidth, int iconHeight, int maxWidth, int maxHeight) {
         if (!enabled) return;
         if (gui == null) gui = minecraft.ingameGUI;
 
@@ -34,8 +36,10 @@ public class IconRenderer {
         int maxCols = maxWidth / iconWidth;
         int maxRows = maxHeight / iconHeight;
 
-        for (int i = 0; i < statuses.size(); i++) {
-            Status status = statuses.get(i);
+        int i = 0;
+        Iterator<Status> iterator = statuses.iterator();
+        while (iterator.hasNext()) {
+            Status status = iterator.next();
             int row = i / maxCols;
             int col = i % maxCols;
             int x1 = x + iconWidth * col; // columns stack to the right
@@ -53,6 +57,7 @@ public class IconRenderer {
                 drawClockRect(x1, y1, iconWidth, iconHeight, status.getElapsed(), iconOverlayRGBA[0], iconOverlayRGBA[1], iconOverlayRGBA[2], iconOverlayRGBA[3], handRGBA[0], handRGBA[1], handRGBA[2], handRGBA[3]);
                 drawBorder(x1, y1, iconWidth, iconHeight, borderRGBA[0], borderRGBA[1], borderRGBA[2], borderRGBA[3]);
             }
+            i++;
         }
     }
     private static void drawScaledIcon2D(ResourceLocation icon, int x, int y, float width, float height) {

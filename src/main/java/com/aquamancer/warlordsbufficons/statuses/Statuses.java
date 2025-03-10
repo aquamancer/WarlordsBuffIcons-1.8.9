@@ -32,8 +32,8 @@ public class Statuses {
      * status from displayed list but still present in the mirrored; ALTERNATIVE: removeSoft just sets enabled
      * field to false), and if the user configs to not display the status.
      */
-    private List<Status> displayedBuffs;
-    private List<Status> displayedDebuffs;
+    private PriorityLinkedList displayedBuffs;
+    private PriorityLinkedList displayedDebuffs;
 
     /**
      * Map&lt;universalName, &lt;rolling sum, n&gt;&gt; that stores the time it takes for each
@@ -50,6 +50,8 @@ public class Statuses {
         this.mirroredDebuffs = new ArrayList<>();
         this.experimentalDurations = new HashMap<>();
         this.prematureStatuses = new ArrayList<>();
+        this.displayedBuffs = new PriorityLinkedList();
+        this.displayedDebuffs = new PriorityLinkedList();
     }
 
     /**
@@ -87,14 +89,14 @@ public class Statuses {
         
         if (status.isDebuff()) {
             this.debuffs.add(status);
-            if (status.iconEnabled()) displayedDebuffs.add(status);
+            if (status.iconEnabled()) displayedDebuffs.insert(status);
         } else {
             this.buffs.add(status);
-            if (status.iconEnabled()) displayedBuffs.add(status);
+            if (status.iconEnabled()) displayedBuffs.insert(status);
         }
     }
 
-    public void processNewActionBarStatus(List<Map.Entry<String, Integer>> actionBarStatuses, boolean isActionBarDebuff) {
+    public void processNewActionBarStatuses(List<Map.Entry<String, Integer>> actionBarStatuses, boolean isActionBarDebuff) {
         for (Map.Entry<String, Integer> actionBarStatus : actionBarStatuses) {
             Status status = StatusFactory.createStatusFromActionBarName(
                     actionBarStatus.getKey(),
@@ -112,10 +114,10 @@ public class Statuses {
     public void processNewCustomChatStatus(Status status) {
         if (status.isDebuff()) {
             this.debuffs.add(status);
-            if (status.iconEnabled()) displayedDebuffs.add(status);
+            if (status.iconEnabled()) displayedDebuffs.insert(status);
         } else {
             this.buffs.add(status);
-            if (status.iconEnabled()) displayedBuffs.add(status);
+            if (status.iconEnabled()) displayedBuffs.insert(status);
         }
     }
     public void processNewPrematureStatus(Status status) {
@@ -183,11 +185,11 @@ public class Statuses {
         return this.experimentalDurations;
     }
 
-    public List<Status> getDisplayedBuffs() {
+    public PriorityLinkedList getDisplayedBuffs() {
         return displayedBuffs;
     }
 
-    public List<Status> getDisplayedDebuffs() {
+    public PriorityLinkedList getDisplayedDebuffs() {
         return displayedDebuffs;
     }
 }
