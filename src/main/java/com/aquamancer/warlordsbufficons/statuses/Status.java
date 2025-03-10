@@ -16,8 +16,9 @@ public class Status {
     /*
      * Fields from statuses.json
      */
-    boolean isDebuff, iconEnabled, isCustom;
-    int[] borderRGBA;
+    private boolean isDebuff, iconEnabled, isCustom;
+    private int[] borderRGBA;
+    private int priority;
     /*
      * Custom fields for runtime
      */
@@ -52,7 +53,7 @@ public class Status {
      *      - initial duration logging
      * stacking info
      */
-    private Status(int initialDuration, boolean isDebuff, boolean iconEnabled, boolean isCustom, int[] borderRGBA) {
+    private Status(int initialDuration, boolean isDebuff, boolean iconEnabled, boolean isCustom, int[] borderRGBA, int priority) {
         this.timeAddedMillis = Minecraft.getSystemTime();
         this.hasExperimentalDurationBeenLogged = false;
         this.isUnrecognized = false;
@@ -64,6 +65,7 @@ public class Status {
         this.iconEnabled = iconEnabled;
         this.isCustom = isCustom;
         this.borderRGBA = borderRGBA;
+        this.priority = priority;
     }
 
     /**
@@ -91,12 +93,12 @@ public class Status {
      * @param isCustom
      * @param borderRGBA
      */
-    protected Status(String universalName, int initialDuration, boolean isDebuff, boolean iconEnabled, boolean isCustom, int[] borderRGBA) {
-        this(initialDuration, isDebuff, iconEnabled, isCustom, borderRGBA);
+    protected Status(String universalName, int initialDuration, boolean isDebuff, boolean iconEnabled, boolean isCustom, int[] borderRGBA, int priority) {
+        this(initialDuration, isDebuff, iconEnabled, isCustom, borderRGBA, priority);
         this.universalName = universalName;
     }
-    protected Status(String universalName, int initialDuration, int initialDisplayedDuration, boolean isDebuff, boolean iconEnabled, boolean isCustom, int[] borderRGBA) {
-        this(initialDuration, isDebuff, iconEnabled, isCustom, borderRGBA);
+    protected Status(String universalName, int initialDuration, int initialDisplayedDuration, boolean isDebuff, boolean iconEnabled, boolean isCustom, int[] borderRGBA, int priority) {
+        this(initialDuration, isDebuff, iconEnabled, isCustom, borderRGBA, priority);
         this.universalName = universalName;
         this.initialDisplayedDuration = initialDisplayedDuration;
         this.displayedDuration = initialDisplayedDuration;
@@ -165,6 +167,9 @@ public class Status {
     }
     public int[] getBorderRGBA() {
         return this.borderRGBA;
+    }
+    public int getPriority() {
+        return this.priority;
     }
     public boolean isDebuff() {
         return this.isDebuff;

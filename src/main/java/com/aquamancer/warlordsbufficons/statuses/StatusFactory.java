@@ -44,7 +44,8 @@ public class StatusFactory {
                 GsonUtils.getBoolean(data, "isDebuff", false),
                 GsonUtils.getBoolean(data, "iconEnabled", true),
                 GsonUtils.getBoolean(data, "custom", false),
-                GsonUtils.getIntArray(data, "borderRGBA", new int[]{0, 255, 0, 255})
+                GsonUtils.getIntArray(data, "borderRGBA", new int[]{0, 255, 0, 255}),
+                GsonUtils.getInt(data, "priority", Integer.MAX_VALUE)
         );
     }
 
@@ -65,7 +66,8 @@ public class StatusFactory {
                 GsonUtils.getBoolean(data, "isDebuff", false),
                 GsonUtils.getBoolean(data, "iconEnabled", true),
                 GsonUtils.getBoolean(data, "custom", false),
-                GsonUtils.getIntArray(data, "borderRGBA", new int[]{0, 255, 0, 255})
+                GsonUtils.getIntArray(data, "borderRGBA", new int[]{0, 255, 0, 255}),
+                GsonUtils.getInt(data, "priority", Integer.MAX_VALUE)
         );
     }
 
