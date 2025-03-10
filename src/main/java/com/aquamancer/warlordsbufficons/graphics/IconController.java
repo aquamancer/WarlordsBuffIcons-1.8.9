@@ -10,6 +10,6 @@ public class IconController {
     public static void render() {
         PriorityLinkedList buffs = StatusController.getStatuses().getDisplayedBuffs();
         PriorityLinkedList debuffs = StatusController.getStatuses().getDisplayedDebuffs();
-
+        // todo calculate coords
     }
 }
